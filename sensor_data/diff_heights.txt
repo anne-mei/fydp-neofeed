@@ -1,0 +1,9 @@
+HIGH 17 inches: 
+Time: 20:30.34
+MEDIUM 12.5 inches: 
+Time: 23.04.17
+Start: 300
+LOW: 7 inches
+Time:
+Start:250
+Time: 42:40.46
