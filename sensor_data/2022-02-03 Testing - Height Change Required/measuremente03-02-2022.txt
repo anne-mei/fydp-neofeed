@@ -1,0 +1,15 @@
+LIGHT HIGHH 15ML
+height syringe: 61 3/8 inches (table: 36 in 3/8)
+height outlet: 7.75inches
+
+Trial 1: start 620, end 2200
+Trial 2: start 500, end 1750
+Trial 3: start 400, end 2200
+Trial 4 (30 mL): start
+
+LOAD HIGH 30 ML
+height syringe: 56 3/8 inches
+height outlet: 7.75 inches
+Trial 1: start 590, end 8000
+Trial 2: f, end 8000
+Trial 3: 300, end 8000 ish

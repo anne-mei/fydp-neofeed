@@ -151,6 +151,7 @@ class VideoWindow(QWidget):
             self.cap = cv2.VideoCapture(self.filename)
             self.frame_rate = self.cap.get(cv2.CAP_PROP_FPS)
             self.frame_count = self.cap.get(cv2.CAP_PROP_FRAME_COUNT)
+            print(self.frame_rate)
             #self.totalframe_label.setText('Total Frame Number: '+str(int(self.frame_count)))
  
  
