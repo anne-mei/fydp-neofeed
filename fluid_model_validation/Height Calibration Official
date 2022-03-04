@@ -31,10 +31,10 @@ class HeightCalibration:
         OUTPUT:
            hf (float): Headloss friction from bends and tubing 
         '''
-        f = ((self.d*self.mu*16*math.pi)/(4*(self.flow_rate/2)*self.rho))
+        f = ((self.d*self.mu*16*math.pi)/(4*(self.flow_rate)*self.rho))
         k_tubing = 4*f*self.l_total/self.d
         kf = k_tubing + self.k_bends 
-        hf = (kf/2) *(velocity/2)**2
+        hf = (kf/2) *(velocity)**2
         return hf
 
     def get_height(self,velocity,headloss_friction):
@@ -57,9 +57,6 @@ class HeightCalibration:
         headloss_friction = self.get_headloss_friction(velocity)
         print(headloss_friction)
         height = self.get_height(velocity,headloss_friction)
-        height = int(height*1000)*2
+        #height = int(height*1000)
     
         return height
-
-height = HeightCalibration(0.7,1035).return_req_height()
-print(height)
