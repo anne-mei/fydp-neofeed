@@ -1,16 +1,6 @@
-import csv
-import time
-import matplotlib.pyplot as plt
-import matplotlib.animation as animation
-import numpy as np
-import os
-# from drawnow import drawnow, figure
 from scipy import stats
-from scipy.signal import butter, lfilter, freqz, filtfilt, medfilt, resample
-from sklearn.metrics import mean_squared_error
-import pandas as pd
 import math
-from matplotlib import rcParams
+
 
 WINDOW_WIDTH_RAW = 10
 WINDOW_WIDTH_FLOWRATE = 25

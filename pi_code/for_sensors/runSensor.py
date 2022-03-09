@@ -1,11 +1,12 @@
 #! /usr/bin/python2
 
+import os
 import time
 import sys
 from RunningMedian import RunningMedian
 from FilterWindow import FilterWindow
 import csv
-
+from get_flow_rate import get_flow_rate, WINDOW_WIDTH_RAW, FPS
 #Intialize load sensor
 EMULATE_HX711=False
 
@@ -29,11 +30,13 @@ def cleanAndExit():
 #Initialize clases
 hx = HX711(5, 6)
 rn = RunningMedian(50)
-filter_window = FilterWindow(40,900)
+flow_rates = []
+filter_window = FilterWindow(WINDOW_WIDTH_RAW,FPS)
 hx.set_reading_format("MSB", "MSB")
 hx.set_reference_unit(referenceUnit)
 hx.reset()
 hx.tare()
+
 
 #Save data
 total_avg_weights = []
@@ -52,26 +55,37 @@ while True:
             
         #Find overall average
         avg_weight = total_weight/avg_count
-        print(avg_weight)
+        print("current weight",avg_weight)
 
 
         #Get array of averages
         avg_weights = filter_window.get_filter_window(avg_weight)
         
+        current_flow_rate, flow_rates = get_flow_rate(avg_weights, flow_rates)
+        print("current flow rate",current_flow_rate)
         #PUT IN FLOW SENSOR READING CODE HERE
         
         #save_data
-        #total_avg_weights.append(avg_weight)
+        total_avg_weights.append(avg_weight)
+        
+        
         
         #hx.power_down()
         #hx.power_up()
         #time.sleep(0.001)'''
     except (KeyboardInterrupt, SystemExit):
         #save_data
-        '''csv_name = '/result.csv'
-        csv_path = '/home/pi/Documents'+csv_name
-        with open(csv_path,'w',newline = "") as f:
+        data_folder = '/home/pi/Documents/data/'
+        
+        # save total_avg_weights
+        with open(os.path.join(data_folder, 'total_avg_weights.csv'),'w',newline = "") as f:
             write = csv.writer(f)
-            write.writerows([[x] for x in total_avg_weights])'''
+            write.writerows([[x] for x in total_avg_weights])
+            
+        # save flow_rate values
+        with open(os.path.join(data_folder, 'flow_rates.csv'),'w',newline = "") as f:
+            write = csv.writer(f)
+            write.writerows([[x] for x in flow_rates])
+            
         
         cleanAndExit()
