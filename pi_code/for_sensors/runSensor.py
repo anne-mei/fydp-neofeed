@@ -2,6 +2,7 @@
 
 import os
 import time
+from datetime import datetime
 import sys
 from RunningMedian import RunningMedian
 from FilterWindow import FilterWindow
@@ -75,15 +76,17 @@ while True:
         #time.sleep(0.001)'''
     except (KeyboardInterrupt, SystemExit):
         #save_data
-        data_folder = '/home/pi/Documents/data/'
+        data_folder = '/home/pi/repos/fydp-neofeed/sensor_data/raspberrypi_data'
+        
+        curr_datetime = datetime.now()
         
         # save total_avg_weights
-        with open(os.path.join(data_folder, 'total_avg_weights.csv'),'w',newline = "") as f:
+        with open(os.path.join(data_folder, 'total_avg_weights--' + str(curr_datetime) + '.csv'),'w',newline = "") as f:
             write = csv.writer(f)
             write.writerows([[x] for x in total_avg_weights])
             
         # save flow_rate values
-        with open(os.path.join(data_folder, 'flow_rates.csv'),'w',newline = "") as f:
+        with open(os.path.join(data_folder, 'flow_rates--' + str(curr_datetime) + '.csv'),'w',newline = "") as f:
             write = csv.writer(f)
             write.writerows([[x] for x in flow_rates])
             
