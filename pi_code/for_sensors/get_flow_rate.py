@@ -33,11 +33,12 @@ def get_flow_rate(sensor_data, flow_rate_sig):
         curr_start = int(-WINDOW_WIDTH_FLOWRATE * FPS)
         curr_window_flowrate_sig = flow_rate_sig[curr_start:]
         curr_flowrate_val = stats.trim_mean(curr_window_flowrate_sig, 0.3)
+        
+        # load sensor calibration
+        calibration_factor = 0.54
+        curr_flowrate_val = round(calibration_factor * curr_flowrate_val, 2)
+        
     else:
-        curr_flowrate_val = 0
-
-    # load sensor calibration
-    calibration_factor = 0.54
-    curr_flowrate_val = round(calibration_factor * curr_flowrate_val, 2)
+        curr_flowrate_val = -100
 
     return curr_flowrate_val, flow_rate_sig
