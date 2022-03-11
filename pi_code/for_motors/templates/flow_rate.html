@@ -1,8 +1,14 @@
 <html>
-    <head><title>flow_rate</title></head>
-    <body>
-            <div>Flow Rate: mL/min</div>
-	    <div>Feed Duration:  min</div>
-	
-    </body>
+  <head>
+    <script>
+      function navigate() {
+        window.location.href = "http://127.0.0.1:5000/finish";  // redirect when done!
+      }
+      fetch('slow').then(navigate); // load the slow url then navigate
+    </script>
+  </head>
+  <body>
+    Flow Rate: mL/min
+    Feed Duration: min
+  </body>
 </html>

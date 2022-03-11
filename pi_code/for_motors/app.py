@@ -3,7 +3,7 @@
 
 # Import required libraries
 
-from flask import Flask, render_template, request, session   # Importing the Flask modules
+from flask import Flask, render_template, request, session, jsonify   # Importing the Flask modules
 from time import sleep      # Import sleep module from time library 
 import sys
 import time
@@ -37,9 +37,11 @@ def confirm():
     
     return render_template('confirm.html',flow_rate = flow_rate,feed_dur = feed_dur)
     #return render_template_string(confirm,flow_rate = flow_rate)
-
-@app.route('/set_height/', methods=['POST'])
+@app.route('/set_height/',methods = ['POST'])
 def set_height():
+    return render_template('set_height.html')
+
+def initialize_height():
     
     #Get required height
     flow_rate = session.get('flow_rate', None)
@@ -50,22 +52,27 @@ def set_height():
     initialize_motor()
     height_changed = change_motor_height(height,True)
     session['height_to_baseline'] = height_changed
-    
+    return jsonify()
+
+
+@app.route('/flow_rate/')
+def flow_rate():
     return render_template('flow_rate.html')
 
+@app.route("/slow")
+def slow():
+    time.sleep(10)
+    return jsonify()
 
-@app.route('/flow_rate/', methods=['GET'])
-def flow_rate():
-    sleep(5)
-    return redirect(url_for('home'))
-    return render_template('finish.html'), {"Refresh": "1; url=http://127.0.0.1:5000/finish/"}
-#http://127.0.0.1:5000/
-
-@app.route('/finish/', methods=['GET'])
+@app.route('/finish/')
 def finish():
+    return render_template('finish.html')
+
+@app.route('/return_height/')
+def return_height():
     height_to_baseline = session['height_to_baseline']
     change_motor_height(height_to_baseline,False)
-    return render_template('finish.html')
+    return render_template('return_height.html')
 # Run the app on the local development server
 if __name__ == "__main__":
     app.run()

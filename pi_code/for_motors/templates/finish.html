@@ -1,8 +1,13 @@
 <html>
-    <head><title>finish</title></head>
-    <body>
-        <form method="POST" action="/">
-            <div>FINISHED HOES</div>
-        </form>        
-    </body>
+  <head>
+    <script>
+      function navigate() {
+        window.location.href = "http://127.0.0.1:5000/return_height";  // redirect when done!
+      }
+      fetch('return_height').then(navigate); // load the slow url then navigate
+    </script>
+  </head>
+  <body>
+    FINISHES HOES
+  </body>
 </html>

@@ -13,7 +13,9 @@ GPIO.setmode(GPIO.BCM)
 
 # Define GPIO signals to use
 # Set all pins as output
-
+GPIO.output( 18, GPIO.LOW )
+GPIO.output( 22, GPIO.LOW )
+GPIO.cleanup()
 print("Setting up pins")
 GPIO.setup(18,GPIO.OUT) # step control pin = 18
 GPIO.output(18, False) 
@@ -65,6 +67,7 @@ def change_motor_height(height,moves_up):
     
     GPIO.output( 18, False )
     GPIO.output( 22, False )
+    return height
     #cleanup_motor()
 
         

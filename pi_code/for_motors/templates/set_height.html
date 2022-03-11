@@ -1,6 +1,13 @@
 <html>
-    <head><title>Confirm</title></head>
-    <body>
-	Setting Height....  
-    </body>
+  <head>
+    <script>
+      function navigate() {
+        window.location.href = "http://127.0.0.1:5000/flow_rate";  // redirect when done!
+      }
+      fetch('initialize_height').then(navigate); // load the slow url then navigate
+    </script>
+  </head>
+  <body>
+    Height is Setting!
+  </body>
 </html>
