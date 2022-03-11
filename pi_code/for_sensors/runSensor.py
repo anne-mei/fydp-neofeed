@@ -56,19 +56,20 @@ while True:
             
         #Find overall average
         avg_weight = total_weight/avg_count
-        print("current weight",avg_weight)
+        if avg_weight>0:
+            print("current weight",avg_weight)
 
 
-        #Get array of averages
-        avg_weights = filter_window.get_filter_window(avg_weight)
-        
-        current_flow_rate, flow_rates = get_flow_rate(avg_weights, flow_rates)
-        print("current flow rate",current_flow_rate)
-        #PUT IN FLOW SENSOR READING CODE HERE
-        
-        #save_data
-        total_avg_weights.append(avg_weight)
-        
+            #Get array of averages
+            avg_weights = filter_window.get_filter_window(avg_weight)
+            
+            current_flow_rate, flow_rates = get_flow_rate(avg_weights, flow_rates)
+            print("current flow rate",current_flow_rate)
+            #PUT IN FLOW SENSOR READING CODE HERE
+            
+            #save_data
+            total_avg_weights.append(avg_weight)
+            
         
         
         #hx.power_down()
