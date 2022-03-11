@@ -1,0 +1,25 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Flask App</title>
+</head>
+<body>
+
+  <div id='test'></div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function(event) {
+    const getSensorReading = function() {
+      fetch(`http://${location.host}/flow_rate`)  // send request to route /update
+        .then((resp) => resp.json())
+        .then(function(response) {
+          document.getElementById('test').innerHTML =response.data.toFixed(2);
+      });
+    }
+
+    getSensorReading();
+    setInterval(getSensorReading, 1000);  //request for update every 1 second
+  });
+</script>
+</body>
+</html>
