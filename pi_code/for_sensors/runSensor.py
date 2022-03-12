@@ -92,7 +92,6 @@ class runSensor:
             if self.stop:
                 break
     def start_thread(self):
-        self.flow_rate_now = 0
         self.thread = threading.Thread(target=self.return_flow_rate)
         self.thread.start()
 '''

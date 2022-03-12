@@ -4,9 +4,10 @@
     <title>Flask App</title>
 </head>
 <body>
-
-  <div id='test'></div>
-
+  
+  Flow Rate: <div id='test'>  </div> 
+  <br> 
+  Time Elapsed: <div id='time_elapsed'></div>
 <script>
   document.addEventListener("DOMContentLoaded", function(event) {
     const getSensorReading = function() {
@@ -14,9 +15,11 @@
         .then((resp) => resp.json())
         .then(function(response) {
           document.getElementById('test').innerHTML =response.data.toFixed(2);
+          document.getElementById('time_elapsed').innerHTML =response.time_elapsed;
+          console.log(response.feed_dur);
+          setTimeout(function(){window.location.href = "http://127.0.0.1:5000/finish"},response.feed_dur);
       });
     }
-
     getSensorReading();
     setInterval(getSensorReading, 1000);  //request for update every 1 second
   });

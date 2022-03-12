@@ -25,7 +25,7 @@ TIMEOUT = ((X_64_CLK + 3) * 2 * PULSE_LEN)
 SETTLE_READINGS = 5
 
 import time
-
+import datetime
 import pigpio # http://abyz.co.uk/rpi/pigpio/python.html
 
 class sensor:
@@ -296,6 +296,7 @@ if __name__ == "__main__":
       filter_window = FilterWindow(WINDOW_WIDTH_RAW,FPS)
       total_avg_weights = []
       while True:
+         start = time.time()
          '''
          count, mode, reading = s.get_reading()
          reading =reading/2390*-1
@@ -332,7 +333,8 @@ if __name__ == "__main__":
              total_avg_weights.append(avg_weight)
         
          time.sleep(0.05)
-         
+         end = time.time()
+         print(end - start)
    except KeyboardInterrupt:
       s.pause()
 
