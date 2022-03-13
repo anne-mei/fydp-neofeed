@@ -1,7 +1,8 @@
 import math
 class HeightCalibration:
-    def __init__(self,flow_rate,baby_pressure):
+    def __init__(self,flow_rate,baby_pressure,is_30_mL,height_diff_babyandbox):
         '''Initialize fluid variables'''
+        self.is_30_mL = is_30_mL
         self.rho = 1035           # density of milk (kg/m^3)
         self.g = 9.81             #acceleration due to gravity (m/s^2)
         self.l_total = 0.875       # total length of tube (m)
@@ -9,12 +10,19 @@ class HeightCalibration:
         self.h_full = 0.084        #height of fluid in syringe (m)
         self.p0 = 0                # atmospheric gauge pressure  (Pa)
         self.p1 = self.p0 + self.rho*self.g*self.h_full  #gauge pressure due to liquid in syringe (Pa)
-        self.k_bends = 0.0001 #degree of bends
+
+        if self.is_30_mL:
+            self.h_full = 0.084        #height of fluid in syringe (m)
+            self.k_bends = 0.0001      #degree of bends
+        else:
+            self.h_full = 0.084        
+            self.k_bends = 8000
+
         self.d = 0.0011    # internal tube diameter for 5 French (m)
         self.flow_rate_conversion = 1/60000000 #Conversion factor from mL/min->m^3/s
         self.flow_rate = flow_rate*self.flow_rate_conversion
         self.baby_pressure = baby_pressure
-    
+        self.height_diff_babyandbox = height_diff_babyandbox*(1/100) #height diff between baby and box in m
     def flowrate_to_velocity(self):
         '''
         Converts flow rate (ml/min) to velocity (m/s)
@@ -56,6 +64,11 @@ class HeightCalibration:
         velocity = self.flowrate_to_velocity()
         headloss_friction = self.get_headloss_friction(velocity)
         height = self.get_height(velocity,headloss_friction)
-        #height = int(height*1000)
-    
-        return height
+
+        if self.is_30_mL:
+            height_syringe = 0.107
+            height_motor = height-self.height_diff_babyandbox-height_syringe
+        else:
+            height_syringe = 0.13
+            height_motor = height-self.height_diff_babyandbox-height_syringe
+        return height_motor

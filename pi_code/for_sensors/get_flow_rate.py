@@ -35,7 +35,7 @@ def get_flow_rate(sensor_data, flow_rate_sig):
         curr_flowrate_val = stats.trim_mean(curr_window_flowrate_sig, 0.3)
         
         # load sensor calibration
-        calibration_factor = 0.54
+        calibration_factor = 1.2
         curr_flowrate_val = round(calibration_factor * curr_flowrate_val, 2)
         
     else:

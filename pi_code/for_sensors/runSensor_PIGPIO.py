@@ -11,31 +11,29 @@ from get_flow_rate import get_flow_rate, WINDOW_WIDTH_RAW, FPS
 import threading
 import pigpio
 from sensor import sensor
-EMULATE_HX711=False
-if not EMULATE_HX711:
-    import RPi.GPIO as GPIO
-    from hx711 import HX711
-else:
-    from emulated_hx711 import HX711
 
 class runSensor_PIGPIO:
     def __init__(self):
+        def cbf(count, mode, reading):
+            print(count, mode, reading)
         self.pi = pigpio.pi()
         if not self.pi.connected:
             exit(0)
-        self.s = sensor(self.pi, DATA=5, CLOCK=6, mode=CH_B_GAIN_32, callback=cbf)
+        self.CH_A_GAIN_64  = 0 # Channel A gain 64
+        self.CH_B_GAIN_32 = 1 # Channel A gain 128
+        self.s = sensor(self.pi, DATA=5, CLOCK=6, mode=self.CH_B_GAIN_32, callback=cbf)
         self.rn = RunningMedian(50)
         self.flow_rates = []
         self.filter_window = FilterWindow(WINDOW_WIDTH_RAW,FPS)
         self.total_avg_weights = []
         self.current_flow_rate = 0
         self.stop = False
-        
+
     def initialize_sensor(self):
         time.sleep(2)
         self.s.set_callback(None)
-        self.s.set_mode(CH_A_GAIN_64)
-        self.c, mode, reading = s.get_reading()
+        self.s.set_mode(self.CH_A_GAIN_64)
+        self.c, mode, reading = self.s.get_reading()
         
     def cleanAndExit(self):
         self.stop = True
@@ -45,7 +43,7 @@ class runSensor_PIGPIO:
 
         self.s.pause()
         self.s.cancel()
-        pi.stop()
+        self.pi.stop()
             
         print("Bye!")
 
@@ -71,13 +69,13 @@ class runSensor_PIGPIO:
             total_weight = 0
             for i in range(avg_count):
                 #Find avg median
-                count, mode, reading = s.get_reading()
-                reading =reading
+                count, mode, reading = self.s.get_reading()
+                reading = reading/2390*-1
                 if count != self.c:
                     self.c = count
                     weight = reading
-                    rn.add(weight)
-                    avg_med_val = rn.findAvgMedian(10)
+                    self.rn.add(weight)
+                    avg_med_val = self.rn.findAvgMedian(10)
                     total_weight = total_weight+avg_med_val
                 
             #Find overall average

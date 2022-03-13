@@ -13,10 +13,12 @@ import RPi.GPIO as GPIO
 from heightCalibration import HeightCalibration
 from runMotor import runMotor
 from runSensor_PIGPIO import runSensor_PIGPIO
+import math
 import datetime
+import numpy as np
 
 #Initialize motor and sensor code
-flow_sensor = runSensor()
+flow_sensor = runSensor_PIGPIO()
 flow_sensor.initialize_sensor()
 motor = runMotor()
 motor.initialize_motor()
@@ -31,18 +33,25 @@ def home():
 
 @app.route('/confirm/', methods=['POST'])
 def confirm():
-    #Initialize variables and store them in session
+    #Get variables from form
     feed_vol = float(request.form['feed_vol']) # Feed vol in mL
     feed_dur = float(request.form['feed_dur']) #Feed duration in min
-    session['feed_vol'] = feed_vol
-    session['feed_dur'] = feed_dur
-    
-    #Get flow rate and baby pressure and store them in session
-    flow_rate = feed_vol/feed_dur #flow rate in mL/min
+    syringe_type = str(request.form['syringe_type']) # Either 30mL or 50mL
+
+    #Calculate flow rate
+    input_flow_rate = feed_vol/feed_dur #flow rate in mL/min
     baby_pressure = 0#Feed pressure in Pa
-    session['input_flow_rate'] = flow_rate
+
+    #Store variables in session
+    session['feed_dur'] = feed_dur
+    session['input_flow_rate'] = input_flow_rate
     session['baby_pressure'] = baby_pressure
     session['time_elapsed'] = 0
+    session['height_diff_babyandbox'] = float(request['height_diff_babyandbox']) #height difference between baby and box in cm
+    if syringe_type == '30 mL':
+        session['is_30_mL'] = True
+    else:
+        session['is_30_mL'] = False
     
     return render_template('confirm.html',flow_rate = flow_rate,feed_dur = feed_dur)
 
@@ -58,10 +67,14 @@ def initialize_height():
     time_elapsed = 0
     
     #Get required height
-    flow_rate = session.get('input_flow_rate', None)
+    input_flow_rate = session.get('input_flow_rate', None)
     baby_pressure = session.get('baby_pressure',None)
-    height = HeightCalibration(flow_rate,baby_pressure).return_req_height()
+    is_30_mL = session.get('is_30_mL',None)
+    height_diff_babyandbox = session.get('height_diff_babyandbox',None)
+    height = HeightCalibration(input_flow_rate,baby_pressure,is_30_mL,height_diff_babyandbox).return_req_height()
     
+    #Convert required 
+
     #move motor to required height
     motor.change_motor_height(height,True)
 
@@ -82,7 +95,7 @@ def flow_rate():
     #Determine the avg flow rate over 10 flow rates, compare diff from flow rate input from user
     pause = pause + 1
     if len(flow_sensor.flow_rates>60):
-        avg_flow_rate = np.average(floor(flow_sensor.flow_rates[:-10]))
+        avg_flow_rate = np.average(math.floor(flow_sensor.flow_rates[:-10]))
         
     diff_flow = session['input_flow_rate']-avg_flow_rate
     
@@ -90,7 +103,7 @@ def flow_rate():
     if diff_flow >0.3 and pause >=60:
         motor.change_motor_height(0.01,False)
         pause = 0
-    else if diff_flow<-0.3 and pause>=60:
+    elif diff_flow<-0.3 and pause>=60:
         motor.change_motor_height(0.01,True)
         pause = 0
         
