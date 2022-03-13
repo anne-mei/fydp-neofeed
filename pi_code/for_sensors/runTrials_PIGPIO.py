@@ -311,7 +311,7 @@ if __name__ == "__main__":
             
             #Find avg median
             count, mode, reading = s.get_reading()
-            reading =reading/-239
+            reading =reading
             if count != c:
                 c = count
                 weight = reading
@@ -321,20 +321,21 @@ if __name__ == "__main__":
             
          #Find overall average
          avg_weight = total_weight/avg_count
-         if avg_weight !=0:
-             print("current weight",avg_weight)
-             #Get array of averages
-             avg_weights = filter_window.get_filter_window(avg_weight)
-            
-             current_flow_rate, flow_rates = get_flow_rate(avg_weights, flow_rates)
-             print("current flow rate",current_flow_rate)
-            
-             #save_data
-             total_avg_weights.append(avg_weight)
+         #if avg_weight !=0:   
+         print("current weight",avg_weight)
+         #Get array of averages
+         avg_weights = filter_window.get_filter_window(avg_weight)
         
-         time.sleep(0.05)
-         end = time.time()
-         print(end - start)
+         current_flow_rate, flow_rates = get_flow_rate(avg_weights, flow_rates)
+         print("current flow rate",current_flow_rate)
+        
+         #save_data
+         total_avg_weights.append(avg_weight)
+        
+         time.sleep(0.1)
+         #end = time.time()
+         
+         #print(end - start)
    except KeyboardInterrupt:
       s.pause()
 
@@ -347,12 +348,14 @@ if __name__ == "__main__":
       curr_datetime = datetime.now()
         
       # save total_avg_weights
-      with open(os.path.join(data_folder, 'total_avg_weights--' + str(curr_datetime) + '.csv'),'w',newline = "") as f:
+      with open(os.path.join(data_folder, 'total_avg_weights--' + str(curr_datetime).replace(":","-")
+ + '.csv'),'w',newline = "") as f:
           write = csv.writer(f)
           write.writerows([[x] for x in total_avg_weights])
             
       # save flow_rate values
-      with open(os.path.join(data_folder, 'flow_rates--' + str(curr_datetime) + '.csv'),'w',newline = "") as f:
+      with open(os.path.join(data_folder, 'flow_rates--' + str(curr_datetime).replace(":","-")
+ + '.csv'),'w',newline = "") as f:
           write = csv.writer(f)
           write.writerows([[x] for x in flow_rates])
 

@@ -9,6 +9,8 @@ from FilterWindow import FilterWindow
 import csv
 from get_flow_rate import get_flow_rate, WINDOW_WIDTH_RAW, FPS
 import threading
+import pigpio
+from sensor import sensor
 EMULATE_HX711=False
 if not EMULATE_HX711:
     import RPi.GPIO as GPIO
@@ -16,36 +18,37 @@ if not EMULATE_HX711:
 else:
     from emulated_hx711 import HX711
 
-class runSensor:
+class runSensor_PIGPIO:
     def __init__(self):
-        self.hx = HX711(5, 6)
+        self.pi = pigpio.pi()
+        if not self.pi.connected:
+            exit(0)
+        self.s = sensor(self.pi, DATA=5, CLOCK=6, mode=CH_B_GAIN_32, callback=cbf)
         self.rn = RunningMedian(50)
         self.flow_rates = []
         self.filter_window = FilterWindow(WINDOW_WIDTH_RAW,FPS)
         self.total_avg_weights = []
         self.current_flow_rate = 0
         self.stop = False
+        
     def initialize_sensor(self):
-        referenceUnit = -2390
-
-        #Set reference unit and tare scale
-        self.hx.set_reading_format("MSB", "MSB")
-        self.hx.set_reference_unit(referenceUnit)
-        self.hx.reset()
-        self.hx.tare()
+        time.sleep(2)
+        self.s.set_callback(None)
+        self.s.set_mode(CH_A_GAIN_64)
+        self.c, mode, reading = s.get_reading()
         
     def cleanAndExit(self):
         self.stop = True
         self.thread.join()
-        #Cleanup GPIO
+        #Cleanup pig
         print("Cleaning...")
 
-        if not EMULATE_HX711:
-            GPIO.cleanup()
+        self.s.pause()
+        self.s.cancel()
+        pi.stop()
             
         print("Bye!")
-        sys.exit()
-        
+
     def save_data(self):
         #save_data
         data_folder = '/home/pi/repos/fydp-neofeed/sensor_data/raspberrypi_data'
@@ -53,12 +56,12 @@ class runSensor:
         curr_datetime = datetime.now()
         
         # save total_avg_weights
-        with open(os.path.join(data_folder, 'total_avg_weights--' + str(curr_datetime) + '.csv'),'w',newline = "") as f:
+        with open(os.path.join(data_folder, 'total_avg_weights--' + str(curr_datetime).replace(":","-") + '.csv'),'w',newline = "") as f:
             write = csv.writer(f)
             write.writerows([[x] for x in self.total_avg_weights])
             
         # save flow_rate values
-        with open(os.path.join(data_folder, 'flow_rates--' + str(curr_datetime) + '.csv'),'w',newline = "") as f:
+        with open(os.path.join(data_folder, 'flow_rates--' + str(curr_datetime).replace(":","-") + '.csv'),'w',newline = "") as f:
             write = csv.writer(f)
             write.writerows([[x] for x in self.flow_rates])
                     
@@ -67,30 +70,33 @@ class runSensor:
             avg_count = 10
             total_weight = 0
             for i in range(avg_count):
-                
                 #Find avg median
-                weight = self.hx.get_weight(1)
-                self.rn.add(weight)
-                avg_med_val = self.rn.findAvgMedian(10)
-                total_weight = total_weight+avg_med_val
+                count, mode, reading = s.get_reading()
+                reading =reading
+                if count != self.c:
+                    self.c = count
+                    weight = reading
+                    rn.add(weight)
+                    avg_med_val = rn.findAvgMedian(10)
+                    total_weight = total_weight+avg_med_val
                 
             #Find overall average
             avg_weight = total_weight/avg_count
-            if avg_weight>0:
-                #print("current weight",avg_weight)
+            #print("current weight",avg_weight)
 
 
-                #Get array of averages
-                avg_weights = self.filter_window.get_filter_window(avg_weight)
-                
-                #Get flow rate
-                self.current_flow_rate, self.flow_rates = get_flow_rate(avg_weights, self.flow_rates)
-                #print("current flow rate",self.current_flow_rate)
-                
-                #save_data
-                self.total_avg_weights.append(avg_weight)
+            #Get array of averages
+            avg_weights = self.filter_window.get_filter_window(avg_weight)
+            
+            #Get flow rate
+            self.current_flow_rate, self.flow_rates = get_flow_rate(avg_weights, self.flow_rates)
+            #print("current flow rate",self.current_flow_rate)
+            
+            #save_data
+            self.total_avg_weights.append(avg_weight)
             if self.stop:
                 break
+            
     def start_thread(self):
         self.thread = threading.Thread(target=self.return_flow_rate)
         self.thread.start()

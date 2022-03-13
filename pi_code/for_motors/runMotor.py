@@ -25,6 +25,7 @@ GPIO.output(22, False)'''
 class runMotor():
     def __init__(self):
         self.previous_height = 0
+        
     def initialize_motor(self):
       
         # Use BCM GPIO references instead of physical pin numbers
@@ -44,12 +45,15 @@ class runMotor():
         GPIO.cleanup()
     
     def return_to_base_height(self):
+        
+        #Return motor to base height
         if self.previous_height>=0:
             self.change_motor_height(self.previous_height,False)
         else:
             print ('Error - Motor no longer knows its position')
             
     def change_motor_height(self,height,moves_up):
+        
         # Initialise variables
         WaitTime = 0.05 # changed to 500ms
         stepCounter = 0
@@ -59,12 +63,15 @@ class runMotor():
         print("Steps to rotate received:",int(stepsToRotate))
         
         try:
+            #Initialize if motor moves up or down and set GPIO
             if moves_up:
                 GPIO.output( 22, GPIO.HIGH) # high is clockwise and low is counterclockwise
                 self.previous_height = self.previous_height+height
             else:
                 GPIO.output(22,GPIO.LOW)
                 self.previous_height = self.previous_height-height
+                
+            #Move motor determined amount of steps
             for stepCounter in range(int(stepsToRotate)):
                 #for pin in range(0, 4):
                 GPIO.output(18, GPIO.HIGH)
@@ -76,9 +83,9 @@ class runMotor():
             cleanup_motor()
             exit(1)
         
+        #Clean GPIO output
         GPIO.output( 18, False )
         GPIO.output( 22, False )
         return height
-        #cleanup_motor()
 
         
