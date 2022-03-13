@@ -1,5 +1,7 @@
 <html>
   <head>
+    <link href='https://fonts.googleapis.com/css?family=Nunito' rel='stylesheet'>
+
     <script>
       function navigate() {
         window.location.href = "http://127.0.0.1:5000/initialize_height";  // redirect when done!
@@ -7,6 +9,21 @@
       fetch('initialize_height').then(navigate); // load the slow url then navigate
     </script>
   </head>
+
+  <style>
+    body {
+        background-image: url(../static/header.png);
+        background-repeat: no-repeat;
+        font-family: "Nunito"
+
+    }
+
+    .center {
+        display: flex;
+        justify-content: center;
+    }
+    
+  </style>
   <body>
     Height is Setting!
   </body>

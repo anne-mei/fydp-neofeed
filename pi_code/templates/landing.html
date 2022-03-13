@@ -1,14 +1,17 @@
 <html>
     <head>
-        <title>Landing Page</title>
+        <link href='https://fonts.googleapis.com/css?family=Nunito' rel='stylesheet'>
+
         <style>
             label {
-                font-family: "Fira Sans", sans-serif;
+                font-family: 'Nunito';
+                font-size: 40px;
             }
 
             body {
                 background-image: url(../static/header.png);
                 background-repeat: no-repeat;
+                font-family: "Nunito"
             }
 
             .center {
@@ -22,15 +25,54 @@
                 margin: 8px 0;
                 box-sizing: border-box;
                 border: 3px solid #ccc;
-            }   
-            
-            input[list] { 
+                font-size: 40px;
+            }       
+
+            input[type=text] { 
                 width: 100%;
                 padding: 12px 20px;
                 margin: 8px 0;
                 box-sizing: border-box;
                 border: 3px solid #ccc;
-            }    
+                font-size: 40px;
+            }       
+            
+            select{
+                width: 100%;
+                padding: 12px 20px;
+                margin: 8px 0;
+                box-sizing: border-box;
+                border: 3px solid #ccc;
+                font-size: 40px;
+            }
+
+            #syringe_vol option{ 
+                font-size: 15px; 
+                font-family: 'Nunito';
+                max-width: 10px;
+                min-width: 10px;
+                width: 10px !important;
+            }
+
+            input[type=submit] {
+                background-color: #4CAF50; 
+                border: none;
+                color: white;
+                padding: 15px 32px;
+                text-align: center;
+                display: inline-block;
+                font-size: 16px;
+                border-radius: 8px;
+                font-size: 40px;
+            }
+
+            input value{
+                font-family: 'Nunito';
+            }
+
+            /* .dropdown {
+                width: 200px;
+            } */
 
         </style>
     </head>
@@ -47,31 +89,33 @@
     <br><br>
     <br><br>
 
+
     <div class="center">
         <form method = "POST" action="/confirm/">
             <label for="feed_vol">Feed volume:</label>
-            <input type="number" id="feed_vol" name="feed_vol" min="0" value="0" step="0.5" inputmode="decimal">
+            <input type="number" id="feed_vol" name="feed_vol" min="0" value="0" step="0.5" inputmode="decimal"><span style="margin-left:-80px; font-size: 40px; font-family: Nunito;">mL</span>
 
             <br><br>
             <br><br>
 
             <label for="feed_dur">Feed session length:</label>
-            <input type="number" id="feed_dur" name="feed_dur" min="0" value="0" step="1"> 
+            <input type="number" id="feed_dur" name="feed_dur" min="0" value="0" step="1"><span style="margin-left:-80px; font-size: 40px; font-family: Nunito;">min</span>
 
             <br><br>
             <br><br>
 
             <label for="syringe_vol">Syringe volume:</label>
-            <input list="syringe_types" id="syringe_types" name="syringe_types"/>
-                <datalist id="syringe_types">
-                    <option value="30 mL">
-                    <option value="50 mL">
-                </datalist>
+            <select class = 'dropdown' name="syringe_vol" id="syringe_vol">
+                <option value="30 mL">30 mL</option>
+                <option value="50 mL">50 mL</option>
+            </select>
 
             <br><br>
             <br><br>
+
+
+            <input type="submit" value="Next" />
         </form>    
     </div> 
-    <input type="submit" value="Next" />
 </body>
 </html>

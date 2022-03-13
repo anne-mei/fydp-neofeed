@@ -1,14 +1,17 @@
 <html>
     <head>
-        <title>Landing Page</title>
+        <link href='https://fonts.googleapis.com/css?family=Nunito' rel='stylesheet'>
+
         <style>
             label {
-                font-family: "Fira Sans", sans-serif;
+                font-family: 'Nunito';
+                font-size: 40px;
             }
             
             body {
                 background-image: url(../static/header.png);
                 background-repeat: no-repeat;
+                font-family: "Nunito"
             }
 
             .center {
@@ -22,7 +25,31 @@
                 margin: 8px 0;
                 box-sizing: border-box;
                 border: 3px solid #ccc;
+                font-size: 40px;
+
             }       
+
+            input[type=text] { 
+                width: 100%;
+                padding: 12px 20px;
+                margin: 8px 0;
+                box-sizing: border-box;
+                border: 3px solid #ccc;
+                font-size: 40px;
+            }       
+
+            input[type=submit] {
+                background-color: #4CAF50; 
+                border: none;
+                color: white;
+                padding: 15px 32px;
+                text-align: center;
+                display: inline-block;
+                font-size: 16px;
+                border-radius: 8px;
+                font-size: 40px;
+                
+            }
 
         </style>
     </head>
@@ -37,23 +64,23 @@
     <br><br>
     <br><br>
     <br><br>
-    <br><br>
+
+
 
     <div class="center">
-        <label for="today_date">Today's date</label>
-        <br><br>
-        <br><br>
-
         <form method = "POST" action="/confirm/">
+            <label for="today_date">Today's date:</label>
+            <input type="text" placeholder=" " id="today_date" name="today_date" value="Sunday, March 13th, 2022" readonly>
+            <br><br>
+            <br><br>
             <label for="feed_day">Feeding day:</label>
-            <input type="number" id="feed_day" name="feed_day" min="0" value="0" step="1" inputmode="numeric">
+            <input type="number" placeholder=" " id="feed_day" name="feed_day" min="0" value="0" step="1" inputmode="numeric">
             <br><br>
             <br><br>
             <label for="infant_weight">Infant weight:</label>
-            <input type="number" id="infant_weight" name="infant_weight" min="0" value="0" step="0.1" inputmode="decimal">
+            <input type="number" placeholder=" " id="infant_weight" name="infant_weight" min="0" value="0" step="0.1" inputmode="decimal" ><span style="margin-left:-70px; font-size: 40px; font-family: Nunito;">kg</span>
             <br><br>
             <br><br>
-
             <br><br>
             <input type="submit" value="Next" />
         </form>    
