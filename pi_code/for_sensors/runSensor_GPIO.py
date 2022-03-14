@@ -51,12 +51,12 @@ class runSensor_GPIO:
         curr_datetime = datetime.now()
         
         # save total_avg_weights
-        with open(os.path.join(data_folder, 'total_avg_weights--' + str(curr_datetime) + '.csv'),'w',newline = "") as f:
+        with open(os.path.join(data_folder, 'total_avg_weights--' + str(curr_datetime).replace(":","-") + '.csv'),'w',newline = "") as f:
             write = csv.writer(f)
             write.writerows([[x] for x in self.total_avg_weights])
             
         # save flow_rate values
-        with open(os.path.join(data_folder, 'flow_rates--' + str(curr_datetime) + '.csv'),'w',newline = "") as f:
+        with open(os.path.join(data_folder, str(curr_datetime).replace(":","-") + '.csv'),'w',newline = "") as f:
             write = csv.writer(f)
             write.writerows([[x] for x in self.flow_rates])
                     
@@ -93,7 +93,7 @@ class runSensor_GPIO:
         self.thread = threading.Thread(target=self.return_flow_rate)
         self.thread.start()
 
-'''
+
 #for testing
 flow_sensor = runSensor_GPIO()
 flow_sensor.initialize_sensor()
@@ -101,4 +101,4 @@ try:
     flow_sensor.return_flow_rate()
 except KeyboardInterrupt:
     flow_sensor.save_data()
-    flow_sensor.cleanAndExit()'''
+    flow_sensor.cleanAndExit()
