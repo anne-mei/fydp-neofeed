@@ -8,8 +8,8 @@
         }
 
         .center {
-            display: flex;
-            justify-content: center;
+                display: flex;
+                justify-content: center;
         }
 
         input[type=submit] {
@@ -39,8 +39,6 @@
         .text {
             font-size: 40px;
             font-family: "Nunito";
-            display: flex;
-            justify-content: center;
         }
 
         form{
@@ -54,17 +52,19 @@
         h3{
             font-family: 'Nunito';
             color: #DF5043;
-            font-weight: bold;
-            font-size: 40px;
+            font-weight: 900;
+            font-size: 60px;
+            text-align: center
         }
 
         h4{
             font-family: 'Nunito';
-            color: #DF5043;
-            font-weight: bold;
+            color: black;
             font-size: 40px;
+            text-align: center;
+            padding-bottom: 0;
+            
         }
-
 
     </style>
 
@@ -89,18 +89,17 @@
         <br>
         <br>
 
-        <div class="center">
         <div class = "text">
-            Your flow rate will be: 
-            <br>
-            <h3>{{ flow_rate }} mL/min</h3>
-        </div>
-            <br>
-            <br>
-        </div>
-        
-        <div class="center">
+        <h4>Your flow rate will be:</h4>
+        <h3>{{ flow_rate }} mL/min</h3>
+        </div>        
 
+        <div class = "text">
+        <h4>Your feed duration will be:</h4> 
+        <h3>{{ feed_dur }} min</h3>
+        </div>
+
+        <div class="center">
         <form class="text" method="POST" action="/input2/">
 	        <input type="reset" value="go back" />
         </form>
