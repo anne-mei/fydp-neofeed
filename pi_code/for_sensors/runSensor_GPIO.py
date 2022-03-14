@@ -16,7 +16,7 @@ if not EMULATE_HX711:
 else:
     from emulated_hx711 import HX711
 
-class runSensor:
+class runSensor_GPIO:
     def __init__(self):
         self.hx = HX711(5, 6)
         self.rn = RunningMedian(50)
@@ -36,7 +36,7 @@ class runSensor:
         
     def cleanAndExit(self):
         self.stop = True
-        self.thread.join()
+        #self.thread.join()
         #Cleanup GPIO
         print("Cleaning...")
 
@@ -77,31 +77,29 @@ class runSensor:
             #Find overall average
             avg_weight = total_weight/avg_count
             print("current weight",avg_weight)
-            if avg_weight>0:
-                #print("current weight",avg_weight)
+            #print("current weight",avg_weight)
 
 
-                #Get array of averages
-                avg_weights = self.filter_window.get_filter_window(avg_weight)
-                
-                #Get flow rate
-                self.current_flow_rate, self.flow_rates = get_flow_rate(avg_weights, self.flow_rates)
-                #print("current flow rate",self.current_flow_rate)
-                
-                #save_data
-                self.total_avg_weights.append(avg_weight)
+            #Get array of averages
+            avg_weights = self.filter_window.get_filter_window(avg_weight)
+            
+            #Get flow rate
+            self.current_flow_rate, self.flow_rates = get_flow_rate(avg_weights, self.flow_rates)
+            print("current flow rate",self.current_flow_rate)
+            
+            #save_data
+            self.total_avg_weights.append(avg_weight)
             if self.stop:
                 break
     def start_thread(self):
         self.thread = threading.Thread(target=self.return_flow_rate)
         self.thread.start()
 '''
-flow_sensor = runSensor()
+for testing
+flow_sensor = runSensor_GPIO()
 flow_sensor.initialize_sensor()
 try:
-    while True:
-        flow_rate = flow_sensor.return_flow_rate()
-        print(flow_rate)
+    flow_sensor.return_flow_rate()
 except KeyboardInterrupt:
     flow_sensor.save_data()
     flow_sensor.cleanAndExit()

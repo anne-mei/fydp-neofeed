@@ -80,7 +80,7 @@ class runSensor_PIGPIO:
             for i in range(avg_count):
                 #Find avg median
                 count, mode, reading = self.s.get_reading()
-                reading = reading/2390*-1
+                reading = reading/239*-1
                 if count != self.c:
                     self.c = count
                     weight = reading
@@ -90,6 +90,7 @@ class runSensor_PIGPIO:
                 
             #Find overall average
             avg_weight = total_weight/avg_count
+  
             print("current weight",avg_weight)
 
 

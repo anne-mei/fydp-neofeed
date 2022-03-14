@@ -4,7 +4,7 @@ import math
 
 WINDOW_WIDTH_RAW = 10
 WINDOW_WIDTH_FLOWRATE = 25
-DATAPNT_DELAY = 899
+DATAPNT_DELAY = 899 #100 
 FPS = 1000 / DATAPNT_DELAY
 
 # def butter_filter(data, cutoff, order, fs):
@@ -35,10 +35,11 @@ def get_flow_rate(sensor_data, flow_rate_sig):
         curr_flowrate_val = stats.trim_mean(curr_window_flowrate_sig, 0.3)
         
         # load sensor calibration
-        calibration_factor = 1.2
-        curr_flowrate_val = round(calibration_factor * curr_flowrate_val, 2)
+        calibration_factor = 0.54 #1.2 
+        curr_flowrate_val = round(calibration_factor * curr_flowrate_val, 1) #2)
         
     else:
+        print('len fl signal:', len(flow_rate_sig))
         curr_flowrate_val = -100
 
     return curr_flowrate_val, flow_rate_sig

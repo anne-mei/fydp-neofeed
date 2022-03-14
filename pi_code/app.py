@@ -15,15 +15,14 @@ import time
 import RPi.GPIO as GPIO
 from heightCalibration import HeightCalibration
 from runMotor import runMotor
-from runSensor_PIGPIO import runSensor_PIGPIO
+from runSensor_GPIO import runSensor_GPIO
 import math
 import datetime
 import numpy as np
 from get_feed_volume import get_feed_volume
 
 #Initialize motor and sensor code
-flow_sensor = runSensor_PIGPIO()
-flow_sensor.initialize_sensor()
+flow_sensor = runSensor_GPIO()
 motor = runMotor()
 pause = 0
 
@@ -31,7 +30,8 @@ app = Flask(__name__)
 app.secret_key = 'uwuwuwuwuwuwuwuwuwuuuuuu99999@'
 try:
     @app.route("/", methods=['GET','POST'])
-    def home():                                                                                                                                                         
+    def home():
+        
         return render_template('input1.html')
 
     @app.route('/input2/', methods=['POST'])
@@ -85,9 +85,6 @@ try:
     @app.route('/initialize_height/')
     def initialize_height():
         
-        #Initialize sensor and startflow sensor readings
-        flow_sensor.initialize_sensor()
-        flow_sensor.start_thread()
         time_elapsed = 0
         
         #Get required height
@@ -96,7 +93,11 @@ try:
         is_30_mL = session.get('is_30_mL',None)
         height_diff_babyandbox = session.get('height_diff_babyandbox',None)
         height = HeightCalibration(input_flow_rate,baby_pressure,is_30_mL,height_diff_babyandbox).return_req_height()
-
+        
+        #Initialize sensor and startflow sensor readings
+        flow_sensor.initialize_sensor()
+        flow_sensor.start_thread()
+        
         #move motor to required height
         motor.initialize_motor()
         motor.change_motor_height(height,True)
@@ -112,7 +113,9 @@ try:
         
         #Determine feed duration and current flow_rate
         feed_dur_milli = session['feed_dur']*60*1000
-        flow_rate = flow_sensor.current_flow_rate
+        flow_rate = str(flow_sensor.current_flow_rate) + ' mL/min'
+        if flow_rate == '-100 mL/min':
+            flow_rate = 'Processing...'
         
         #Determine the avg flow rate over 10 flow rates, compare diff from flow rate input from user
         '''
@@ -143,7 +146,7 @@ try:
     def return_height():
         
         #Clean flow sensor pigpio pins and return motor to base height
-        flow_sensor.cleanAndExit()
+        #flow_sensor.cleanAndExit()
         motor.return_to_base_height()
         motor.previous_height = 0
         return render_template('return_height.html')
