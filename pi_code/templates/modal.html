@@ -1,164 +1,143 @@
 <html>
+  <link href='https://fonts.googleapis.com/css?family=Nunito' rel='stylesheet'>
 
-    <style>
-        body {
-  align-items: center;
-  background-color: #000;
-  display: flex;
-  justify-content: center;
-  height: 100vh;
-}
+  <style>
+    .modal {
+      margin: auto;
+      padding: 20px;
+      background: #fff;
+      border: 1px solid #666;
+      width: 550px;
+      height: 375px;
+      border-radius: 6px;
+      box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+      position:fixed;
+      top:0;
+      bottom:0;
+      left:0;
+      right:0;
+      font-family: 'Nunito';
+    }
+    .modal h2 { margin-top: 0; }
+    .modal .close {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      opacity: 0.8;
+      transition: all 200ms;
+      font-size: 24px;
+      font-weight: bold;
+      text-decoration: none;
+      color: #777;
+    }
+    .modal .close:hover { opacity: 1; }
 
-.form {
-  background-color: #ffffff;
-  border-radius: 20px;
-  box-sizing: border-box;
-  height: 500px;
-  padding: 20px;
-  width: 320px;
-}
+    .modal .content {
+      max-height: 400px;
+      overflow: auto;
+    }
 
-.title {
-  color: #eee;
-  font-family: sans-serif;
-  font-size: 36px;
-  font-weight: 600;
-  margin-top: 30px;
-}
+    .modal p:last-child { margin: 0; }
 
-.subtitle {
-  color: #eee;
-  font-family: sans-serif;
-  font-size: 16px;
-  font-weight: 600;
-  margin-top: 10px;
-}
+    .overlay {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0, 0, 0, 0.5);
+      transition: opacity 200ms;
+      visibility: visible;
+      opacity: 0;
+    }
+    .overlay .cancel {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      cursor: default;
+    }
+    .overlay:target {
+      visibility: visible;
+      opacity: 1;
+    }
 
-.input-container {
-  height: 50px;
-  position: relative;
-  width: 100%;
-}
+    body {
+        background-image: url(../static/header.png);
+        background-repeat: no-repeat;
+        font-family: "Nunito"
+    }
 
-.ic1 {
-  margin-top: 40px;
-}
+    p {
+      font-family: 'Nunito';
+      font-size: 35px;
+      padding-right: 50px;
+      padding-left: 50px;
+      padding-bottom: 35px;
+    }
 
-.ic2 {
-  margin-top: 30px;
-}
+    .center {
+      display: flex;
+      justify-content: center;
+    }
 
-.input {
-  background-color: #303245;
-  border-radius: 12px;
-  border: 0;
-  box-sizing: border-box;
-  color: #eee;
-  font-size: 18px;
-  height: 100%;
-  outline: 0;
-  padding: 4px 20px 0;
-  width: 100%;
-}
+    h2 {
+      font-size: 36px;
+      padding: 15px;
+    }
 
-.cut {
-  background-color: #ffffff;
-  border-radius: 10px;
-  height: 20px;
-  left: 20px;
-  position: absolute;
-  top: -20px;
-  transform: translateY(0);
-  transition: transform 200ms;
-  width: 76px;
-}
+    input[type=submit] {
+      background-color: #4CAF50; 
+      border: none;
+      color: white;
+      padding: 15px 32px;
+      text-align: center;
+      display: inline-block;
+      font-size: 16px;
+      border-radius: 8px;
+      font-size: 35px;
+    }
 
-.cut-short {
-  width: 50px;
-}
+    input[type=reset] {
+      background-color: #c03131; 
+      border: none;
+      color: white;
+      padding: 15px 32px;
+      text-align: center;
+      display: inline-block;
+      font-size: 16px;
+      border-radius: 8px;
+      font-size: 35px;
+    }
 
-.input:focus ~ .cut,
-.input:not(:placeholder-shown) ~ .cut {
-  transform: translateY(8px);
-}
+   form{
+    float: left;
+    clear: right;
+    margin-right: 20px; 
+   }
+  </style>
 
-.placeholder {
-  color: #65657b;
-  font-family: sans-serif;
-  left: 20px;
-  line-height: 14px;
-  pointer-events: none;
-  position: absolute;
-  transform-origin: 0 50%;
-  transition: transform 200ms, color 200ms;
-  top: 20px;
-}
+  <body>
+    <div id="modal1" class="overlay">
+      <div class="modal">
+        <h2 style="font-family: 'Nunito';" class="center" >Dangerous Flow Rate Detected</h2>
+        <div class="content">
+        <p>Check that the tubing is secure to both the device and the infant</p>
+        </div>
 
-.input:focus ~ .placeholder,
-.input:not(:placeholder-shown) ~ .placeholder {
-  transform: translateY(-30px) translateX(10px) scale(0.75);
-}
+        <div class="center">
+          <br>
+          <form method="POST" action="/confirm/">
+            <input type="reset" value="reset" />
+          </form>
 
-.input:not(:placeholder-shown) ~ .placeholder {
-  color: #808097;
-}
-
-.input:focus ~ .placeholder {
-  color: #dc2f55;
-}
-
-.submit {
-  background-color: #08d;
-  border-radius: 12px;
-  border: 0;
-  box-sizing: border-box;
-  color: #eee;
-  cursor: pointer;
-  font-size: 18px;
-  height: 50px;
-  margin-top: 38px;
-  // outline: 0;
-  text-align: center;
-  width: 100%;
-}
-
-.submit:active {
-  background-color: #06b;
-}
-
-    </style> 
-
-
-<body>
-        
-    <div class="form">
-
-      <div class="title">Welcome</div>
-    
-      <div class="subtitle">Let's create your account!</div>
-     
-      <div class="input-container ic1">
-        <input id="firstname" class="input" type="text" placeholder=" " />
-        <div class="cut"></div>
-        <label for="firstname" class="placeholder">First name</label>
-      </div>
-     
-      <div class="input-container ic2">
-        <input id="lastname" class="input" type="text" placeholder=" " />
-        <div class="cut"></div>
-        <label for="lastname" class="placeholder">Last name</label>
-      </div>
-     
-      <div class="input-container ic2">
-        <input id="email" class="input" type="text" placeholder=" " />
-        <div class="cut cut-short"></div>
-        <label for="email" class="placeholder">Email</label>
-      </div>
-     
-      <button type="text" class="submit">submit</button>
+          <form method = "POST" action="/flow_rate/">
+          <input type="submit" value="resume" />
+          </form>
+        </div>
 
     </div>
-    
-</body>
-</html>
+    </div>
 
+  </body>
+
+</html>

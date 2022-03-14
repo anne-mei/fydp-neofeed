@@ -44,9 +44,15 @@
 
         form{
             font-size: 40px;
-
+            font-family: 'Nunito';
         }
         
+        .text {
+            font-size: 40px;
+            font-family: "Nunito";
+            display: flex;
+            justify-content: center;
+        }
 
     </style>
 
@@ -72,26 +78,27 @@
         <br>
 
 
-        <form method="POST" action="/input2/">
-            <div class="center">Your flow rate will be: 
+        <div class = "text">
+            Your flow rate will be: 
             <br>
             {{ flow_rate }} mL/min
             <br>
             <br>
-            </div>
 
-            <div class="center">Your feed duration will be:
+
+            Your feed duration will be:
             <br>
             {{ feed_dur }} min
             <br>
             <br>
             <br>
-            </div>
-            
+        </div>
+        
+        <form class="text" method="POST" action="/input2/">
 	        <input type="reset" value="go back" />
         </form>
 
-        <form method="POST" action="/plunge/">
+        <form class="text" method="POST" action="/plunge/">
             <input type="submit" value="confirm" />
         </form>
                 
