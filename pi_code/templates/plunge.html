@@ -1,12 +1,6 @@
 <html>
   <link href='https://fonts.googleapis.com/css?family=Nunito' rel='stylesheet'>
 
-  <script type="text/javascript">
-    document.getElementById("myButton").onclick = function navigate() {
-        window.location.href = "http://127.0.0.1:5000/flow_rate";
-    }
-</script>
-
   <style>
     .modal {
       margin: auto;
@@ -98,16 +92,11 @@
 
         
         <div class="center">
-          <form class="text">
-            <input type="submit" value="ok" onClick="navigate()"/>
+          <form class="text", method="POST", action = "/flow_rate_setter/">
+            <input type="submit" value="ok" />
           </form>        
         </div>
 
-        <script>
-          function navigate() {
-            window.location.href="http://127.0.0.1:5000/flow_rate_setter";  
-          }
-        </script>
 
       </div>
     </div>

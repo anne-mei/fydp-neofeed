@@ -93,6 +93,7 @@ class runSensor_GPIO:
         self.thread = threading.Thread(target=self.return_flow_rate)
         self.thread.start()
 
+'''
 #for testing
 flow_sensor = runSensor_GPIO()
 flow_sensor.initialize_sensor()
@@ -100,4 +101,4 @@ try:
     flow_sensor.return_flow_rate()
 except KeyboardInterrupt:
     flow_sensor.save_data()
-    flow_sensor.cleanAndExit()
+    flow_sensor.cleanAndExit()'''

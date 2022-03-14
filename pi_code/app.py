@@ -72,15 +72,11 @@ try:
         
         return render_template('confirm.html',flow_rate = input_flow_rate,feed_dur = feed_dur)
 
-    @app.route('/plunge/',methods = ['POST'])
-    def plunge():
-        return render_template('plunge.html')
-
 
     @app.route('/set_height/',methods = ['POST'])
     def set_height():
         #initialize motor
-        motor.initialize_motor()
+        
         return render_template('set_height.html')
 
     @app.route('/initialize_height/',methods = ['GET','POST'])
@@ -100,15 +96,20 @@ try:
         flow_sensor.start_thread()
         session['dangerous_flow_detected'] = 0
         
-        #move motor to required height
+        #move and initialize motor to required height
+        motor.initialize_motor()
         motor.change_motor_height(height,True)
         
         #reset time elapsed
         session['time_elapsed'] = 0
 
+        return render_template('plunge.html')
+
+
+    @app.route('/flow_rate_setter/',methods = ['POST'])
+    def flow_rate_setter():
         return render_template('flow_rate.html')
-
-
+    
     @app.route('/flow_rate/')
     def flow_rate():
         
