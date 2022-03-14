@@ -1,6 +1,13 @@
 <html>
   <link href='https://fonts.googleapis.com/css?family=Nunito' rel='stylesheet'>
 
+    <script> 
+     function navigate() {
+        window.location.href = "http://127.0.0.1:5000/initialize_height";
+       }  // redirect when done!
+        fetch('initialize_height').then(navigate); // load the slow url then navigate
+  </script>
+
   <style>
     .modal {
       margin: auto;
@@ -93,6 +100,22 @@
     clear: right;
     margin-right: 20px; 
    }
+
+    .loader {
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 16px solid #3498db;
+    width: 50px;
+    height: 50px;
+    -webkit-animation: spin 2s linear infinite; /* Safari */
+    animation: spin 2s linear infinite;
+  }
+
+  @keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+  }
+
   </style>
 
   <body>
@@ -101,6 +124,9 @@
         <h2 style="font-family: 'Nunito';" class="center" >Setting Height!</h2>
         <div class="content">
         <p>Please wait as the syringe height is initialized...</p>
+          
+        <div class="loader"></div>
+
         </div>
 
     </div>
