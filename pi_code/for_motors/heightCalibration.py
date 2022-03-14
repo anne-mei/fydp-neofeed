@@ -15,8 +15,8 @@ class HeightCalibration:
             self.h_full = 0.084        #height of fluid in syringe (m)
             self.k_bends = 0.0001      #degree of bends
         else:
-            self.h_full = 0.084        
-            self.k_bends = 8000
+            self.h_full = 0.215       
+            self.k_bends = 7250
 
         self.d = 0.0011    # internal tube diameter for 5 French (m)
         self.flow_rate_conversion = 1/60000000 #Conversion factor from mL/min->m^3/s

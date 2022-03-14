@@ -41,11 +41,11 @@ def input2():
     #Get variables from form
     weight = float(request.form['infant_weight']) #weight in kg
     feed_session= float(request.form['feed_session'])
-    feed_day = float(request.form['day_num'])
+    feed_day = float(request.form['feed_day'])
     
     #Calculate feed vol
     feed_vol = get_feed_volume(weight, feed_session, feed_day) # Feed vol in mL
-    
+    #feed_vol = 6
     return render_template('input2.html',feed_vol = feed_vol)
 
 
@@ -99,7 +99,6 @@ def initialize_height():
     height_diff_babyandbox = session.get('height_diff_babyandbox',None)
     height = HeightCalibration(input_flow_rate,baby_pressure,is_30_mL,height_diff_babyandbox).return_req_height()
     
-    #Convert required 
 
     #move motor to required height
     motor.change_motor_height(height,True)

@@ -45,7 +45,7 @@ def get_feed_volume(weight, session_num, day_num):
 
     # access csv file for feed volume
     df = pd.read_csv(os.path.join(feed_csv_folder, csv_name), index_col=0)
-    feed_volume = df.loc[day_num, 'feedsession' + str(session_num)]
+    feed_volume = df.loc[day_num, 'feedsession' + str(int(session_num))]
 
     return feed_volume
 
