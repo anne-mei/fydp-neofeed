@@ -80,6 +80,8 @@ try:
 
     @app.route('/set_height/',methods = ['POST'])
     def set_height():
+        #initialize motor
+        motor.initialize_motor()
         return render_template('set_height.html')
 
     @app.route('/initialize_height/')
@@ -99,7 +101,6 @@ try:
         flow_sensor.start_thread()
         
         #move motor to required height
-        motor.initialize_motor()
         motor.change_motor_height(height,True)
 
         return render_template('flow_rate.html')
@@ -114,9 +115,7 @@ try:
         #Determine feed duration and current flow_rate
         feed_dur_milli = session['feed_dur']*60*1000
         flow_rate = str(flow_sensor.current_flow_rate) + ' mL/min'
-        if flow_rate == '-100 mL/min':
-            flow_rate = 'Processing...'
-        
+        if flow_rate == '-100 mL/min':        
         #Determine the avg flow rate over 10 flow rates, compare diff from flow rate input from user
         '''
         session['pause'] = session['pause'] + 1
@@ -150,6 +149,13 @@ try:
         motor.return_to_base_height()
         motor.previous_height = 0
         return render_template('return_height.html')
+    
+    @app.route('/flow_rate_error/')
+    def flow_rate_error():
+        #flow_sensor.cleanAndExit()
+        motor.return_to_base_height()
+        motor.previous_height = 0
+        return render_template('flow_rate_error.html')
 
     # Run the app on the local development server
     if __name__ == "__main__":

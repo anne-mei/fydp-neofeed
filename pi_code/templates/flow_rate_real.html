@@ -17,38 +17,13 @@
           justify-content: center;
       }
 
-      h4{
-        font-size: 35px;
-        font-weight: bolder;
-      }
-
-      h5{
-        font-size: 25px;
-      }
-
     </style>
 
 <body>
   
-  <div class = "center">
-  <div class = "text">
-    <h5>Flow Rate: </h5>
-    <br>
-    <h4><div id='test'></div></h4>
-    <br>
-    <br>
-
-    Time Elapsed: 
-    <br>
-    <div id='time_elapsed'></div>
-    <br>
-    <br>
-    <br>
-  </div>
-  </div>
-  </div> 
+  Flow Rate: <div id='test'>  </div> 
   <br> 
-  
+  Time Elapsed: <div id='time_elapsed'></div>
 <script>
   document.addEventListener("DOMContentLoaded", function(event) {
     const getSensorReading = function() {
