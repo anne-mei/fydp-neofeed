@@ -1,49 +1,106 @@
 <html>
-    <link href='https://fonts.googleapis.com/css?family=Nunito' rel='stylesheet'>
+  <link href='https://fonts.googleapis.com/css?family=Nunito' rel='stylesheet'>
 
-    <style>
-        label {
-            font-family: 'Nunito';
-            font-size: 40px;
-        }
+  <script type="text/javascript">
+    document.getElementById("myButton").onclick = function navigate() {
+        window.location.href = "http://127.0.0.1:5000/flow_rate";
+    }
+</script>
 
-        body {
-            background-image: url(../static/header.png);
-            background-repeat: no-repeat;
-            font-family: "Nunito"
-        }
+  <style>
+    .modal {
+      margin: auto;
+      padding: 20px;
+      background: #fff;
+      border: 1px solid #666;
+      width: 550px;
+      height: 375px;
+      border-radius: 6px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+      position:fixed;
+      top:0;
+      bottom:0;
+      left:0;
+      right:0;
+      font-family: 'Nunito';
+    }
+    .modal h2 { margin-top: 0; }
+    .modal .close {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      opacity: 0.8;
+      transition: all 200ms;
+      font-size: 24px;
+      font-weight: bold;
+      text-decoration: none;
+      color: #777;
+    }
+    .modal .close:hover { opacity: 1; }
 
-        .center {
-            display: flex;
-            justify-content: center;
-        }
+    .modal .content {
+      max-height: 400px;
+      overflow: auto;
+    }
 
-        input[type=submit] {
-                background-color: #4CAF50; 
-                border: none;
-                color: white;
-                padding: 15px 32px;
-                text-align: center;
-                display: inline-block;
-                font-size: 16px;
-                border-radius: 8px;
-                font-size: 40px;
-            }
+    .modal p:last-child { margin: 0; }
 
-    </style>
+    body {
+        background-image: url(../static/header.png);
+        background-repeat: no-repeat;
+        font-family: "Nunito"
+    }
 
-    <body>
+    p {
+      font-family: 'Nunito';
+      font-size: 35px;
+      padding-right: 50px;
+      padding-left: 50px;
+      padding-bottom: 35px;
+      text-align: center;
+    }
+
+    .center {
+      display: flex;
+      justify-content: center;
+    }
+
+    h2 {
+      font-size: 36px;
+      padding: 15px;
+    }
+
+    button {
+      background-color: #4CAF50; 
+      border: none;
+      color: white;
+      padding: 15px 32px;
+      text-align: center;
+      display: inline-block;
+      font-size: 16px;
+      border-radius: 8px;
+      font-size: 35px;
+    }
+
+
+</style>
+
+  <body>
+    <div id="modal1" class="overlay">
+      <div class="modal">
+        <h2 style="font-family: 'Nunito';" class="center" >Plunge Syringe!</h2>
+        <div class="content">
+        <p>Please ensure that the syringe has been plunged.</p>
+        </div>
         <br>
-        <br>
-        <br>
-
         <div class="center">
+          <button id="myButton" class="float-left submit-button" >ok</button>
+        </div>
 
-        <form method="POST" action="/flow_rate/">
-            <div>Plunge your syringe</div>
-	    <input type="submit" value="confirm" />
-        </form>
-        </div> 
-        
-    </body>
+    </div>
+    </div>
+
+  </body>
+
 </html>
+
