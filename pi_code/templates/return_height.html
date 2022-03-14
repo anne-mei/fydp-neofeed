@@ -1,30 +1,108 @@
 <html>
-
     <link href='https://fonts.googleapis.com/css?family=Nunito' rel='stylesheet'>
 
-    <style>
-        label {
-            font-family: 'Nunito';
-            font-size: 40px;
-        }
+    <!-- <script>
+      function navigate() {
+        window.location.href = "http://127.0.0.1:5000/return_height";  // redirect when done!
+      }
+      fetch('return_height').then(navigate); // load the slow url then navigate
+    </script> -->
 
+    <style>
         body {
             background-image: url(../static/header.png);
             background-repeat: no-repeat;
-            font-family: "Nunito"
         }
 
         .center {
-            display: flex;
-            justify-content: center;
+          display: block;
+          margin-left: auto;
+          margin-right: auto;
+          width: 25%;
         }
+
+        input[type=submit] {
+            background-color: #4CAF50; 
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            display: inline-block;
+            font-size: 16px;
+            border-radius: 8px;
+            font-size: 35px;
+            }
+
+        .text {
+            font-size: 40px;
+            font-family: "Nunito";
+        }
+
+        form{
+            font-size: 40px;
+            font-family: 'Nunito';
+        }
+
+        h3{
+            font-family: 'Nunito';
+            color: #DF5043;
+            font-weight: 900;
+            font-size: 60px;
+            text-align: center
+        }
+
+        .loader {
+          border: 16px solid #f3f3f3;
+          border-radius: 50%;
+          border-top: 16px solid #3498db;
+          width: 50px;
+          height: 50px;
+          animation: spin 2s linear infinite;
+          position: absolute;
+          left: 45%;
+        }
+
+        @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+        }
+
     </style>
 
     <body>
-        <form method="POST" action="/">
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+
+        <div class = "text">
+        <h3>Done feed!</h3>
+
+        <img src= '../static/done_icon.png' class="center">
+          <br>
+          <br>
+
+        <div class="center">
+          <div class="loader"></div>
+        </form>
+        </div>
 
 
-            <input type="submit" value="Ok" />
-        </form>        
+
     </body>
 </html>
