@@ -104,12 +104,12 @@ try:
         session['time_elapsed'] = 0
 
         return render_template('plunge.html')
-
+        
 
     @app.route('/flow_rate_setter/',methods = ['POST'])
     def flow_rate_setter():
         return render_template('flow_rate.html')
-    
+
     @app.route('/flow_rate/')
     def flow_rate():
         
@@ -144,6 +144,14 @@ try:
         templateData = {'data' : flow_rate,'time_elapsed': time_elapsed_formatted,'feed_dur':feed_dur_milli, 'dangerous_flow_detected': dangerous_flow_detected}
         return jsonify(templateData), 200
 
+    @app.route('/flow_rate_error/')
+    def flow_rate_error():
+        motor.return_to_base_height()
+        flow_sensor.cleanAndExit()
+        motor.previous_height = 0
+        session['dangerous_flow_detected'] = 1
+        return render_template('flow_rate_error.html')
+    
     @app.route('/finish/')
     def finish():
         return render_template('finish.html')
@@ -152,19 +160,16 @@ try:
     def return_height():
         
         #Clean flow sensor pigpio pins and return motor to base height
-        flow_sensor.cleanAndExit()
-        motor.return_to_base_height()
-        motor.previous_height = 0
         return render_template('return_height.html')
-    
-    @app.route('/flow_rate_error/')
-    def flow_rate_error():
-        motor.return_to_base_height()
-        motor.previous_height = 0
-        flow_sensor.cleanAndExit()
-        session['dangerous_flow_detected'] = 1
-        return render_template('flow_rate_error.html')
 
+    @app.route('/reset_app/',methods ['POST'])
+    def reset_app():
+        motor.return_to_base_height()
+        flow_sensor.cleanAndExit()
+        motor.previous_height = 0
+        session.clear()
+        return render_template('input1.html')
+    
     # Run the app on the local development server
     if __name__ == "__main__":
         app.run()
