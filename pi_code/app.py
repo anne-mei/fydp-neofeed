@@ -2,9 +2,12 @@
 
 
 # Import required libraries
+import pandas
 import sys
 sys.path.insert(0, '/home/pi/repos/fydp-neofeed/pi_code/for_motors/')
 sys.path.insert(0, '/home/pi/repos/fydp-neofeed/pi_code/for_sensors/')
+sys.path.insert(0, '/home/pi/repos/fydp-neofeed/pi_code/utilities/')
+
 from flask import Flask, render_template, request, session, jsonify   # Importing the Flask modules
 from time import sleep      # Import sleep module from time library 
 import sys
@@ -16,6 +19,7 @@ from runSensor_PIGPIO import runSensor_PIGPIO
 import math
 import datetime
 import numpy as np
+from get_feed_volume import get_feed_volume
 
 #Initialize motor and sensor code
 flow_sensor = runSensor_PIGPIO()
@@ -34,13 +38,18 @@ def home():
 @app.route('/confirm/', methods=['POST'])
 def confirm():
     #Get variables from form
-    feed_vol = float(request.form['feed_vol']) # Feed vol in mL
+    weight = float(request.form['weight']) #weight in kg
+    session_num = float(request.form['session_num'])
+    day_num = float(request.form['day_num'])
     feed_dur = float(request.form['feed_dur']) #Feed duration in min
     syringe_type = str(request.form['syringe_type']) # Either 30mL or 50mL
+    
+    #Calculate feed vol
+    feed_vol = get_feed_volume(weight, session_num, day_num) # Feed vol in mL
 
     #Calculate flow rate
     input_flow_rate = feed_vol/feed_dur #flow rate in mL/min
-    baby_pressure = 0#Feed pressure in Pa
+    baby_pressure = 0#Feed pressure in Pa (irl would be 8mmHg)
 
     #Store variables in session
     session['feed_dur'] = feed_dur
