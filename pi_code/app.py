@@ -33,19 +33,30 @@ app.secret_key = 'uwuwuwuwuwuwuwuwuwuuuuuu99999@'
 
 @app.route("/", methods=['GET','POST'])
 def home():                                                                                                                                                         
-    return render_template('landing.html')
+    return render_template('input1.html')
+
+@app.route('/input2/', methods=['POST'])
+def input2():
+    
+    #Get variables from form
+    weight = float(request.form['infant_weight']) #weight in kg
+    feed_session= float(request.form['feed_session'])
+    feed_day = float(request.form['day_num'])
+    
+    #Calculate feed vol
+    feed_vol = get_feed_volume(weight, feed_session, feed_day) # Feed vol in mL
+    
+    return render_template('input2.html',feed_vol = feed_vol)
+
 
 @app.route('/confirm/', methods=['POST'])
 def confirm():
-    #Get variables from form
-    weight = float(request.form['weight']) #weight in kg
-    session_num = float(request.form['session_num'])
-    day_num = float(request.form['day_num'])
-    feed_dur = float(request.form['feed_dur']) #Feed duration in min
-    syringe_type = str(request.form['syringe_type']) # Either 30mL or 50mL
     
-    #Calculate feed vol
-    feed_vol = get_feed_volume(weight, session_num, day_num) # Feed vol in mL
+    #Get variables from form
+    feed_dur = float(request.form['feed_dur']) #Feed duration in min
+    syringe_vol = str(request.form['syringe_vol']) # Either 30mL or 50mL
+    feed_vol = float(request.form['feed_vol']) #Feed vol in mL
+    height_diff_babyandbox = float(request.form['height_diff_babyandbox']) #Height diff between baby and box in cm
 
     #Calculate flow rate
     input_flow_rate = feed_vol/feed_dur #flow rate in mL/min
@@ -56,13 +67,19 @@ def confirm():
     session['input_flow_rate'] = input_flow_rate
     session['baby_pressure'] = baby_pressure
     session['time_elapsed'] = 0
-    session['height_diff_babyandbox'] = float(request['height_diff_babyandbox']) #height difference between baby and box in cm
-    if syringe_type == '30 mL':
+    session['height_diff_babyandbox'] = float(request['height_diff_babyandbox'])
+    
+    if syringe_vol == '30 mL':
         session['is_30_mL'] = True
     else:
         session['is_30_mL'] = False
     
     return render_template('confirm.html',flow_rate = flow_rate,feed_dur = feed_dur)
+
+@app.route('/plunge/',methods = ['POST'])
+def plunge():
+    return render_template('plunge.html')
+
 
 @app.route('/set_height/',methods = ['POST'])
 def set_height():
