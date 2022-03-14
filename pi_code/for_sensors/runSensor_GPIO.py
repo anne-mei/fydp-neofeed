@@ -95,7 +95,7 @@ class runSensor_GPIO:
         self.thread = threading.Thread(target=self.return_flow_rate)
         self.thread.start()
 '''
-for testing
+#for testing
 flow_sensor = runSensor_GPIO()
 flow_sensor.initialize_sensor()
 try:

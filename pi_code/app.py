@@ -73,9 +73,9 @@ try:
         
         return render_template('confirm.html',flow_rate = input_flow_rate,feed_dur = feed_dur)
 
-    '''@app.route('/plunge/',methods = ['POST'])
+    @app.route('/plunge/',methods = ['POST'])
     def plunge():
-        return render_template('plunge.html')'''
+        return render_template('plunge.html')
 
 
     @app.route('/set_height/',methods = ['POST'])
