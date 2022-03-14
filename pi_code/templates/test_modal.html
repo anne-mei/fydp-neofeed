@@ -1,0 +1,60 @@
+<html>
+    <style>
+
+.modal {
+  margin: 100px auto;
+  padding: 20px;
+  background: #fff;
+  border: 1px solid #666;
+  width: 300px;
+  border-radius: 6px;
+  box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+  position: relative;
+}
+.modal h2 { margin-top: 0; }
+.modal .close {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  top: 20px;
+  right: 20px;
+  opacity: 0.8;
+  transition: all 200ms;
+  font-size: 24px;
+  font-weight: bold;
+  text-decoration: none;
+  color: #777;
+}
+.modal .close:hover { opacity: 1; }
+.modal .content {
+  max-height: 400px;
+  overflow: auto;
+}
+.modal p {
+  margin: 0 0 1em;
+  text-align: center;
+}
+.modal p:last-child { margin: 0; }
+
+
+
+    </style>
+
+
+
+    <body>
+        <div id="modal1" class="overlay">
+            <a class="cancel" href="#"></a>
+            <div class="modal">
+              <h2>This is Modal Overlay 1</h2>
+              <div class="content">
+              <p>Click outside the modal to close.</p>
+              </div>
+            </div>
+          </div>
+
+       
+    </body>
+
+
+</html>

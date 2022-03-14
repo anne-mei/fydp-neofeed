@@ -2,20 +2,14 @@
     <link href='https://fonts.googleapis.com/css?family=Nunito' rel='stylesheet'>
 
     <style>
-        label {
-            font-family: 'Nunito';
-            font-size: 40px;
-        }
-
         body {
             background-image: url(../static/header.png);
             background-repeat: no-repeat;
-            font-family: "Nunito"
         }
 
         .center {
-            display: flex;
-            justify-content: center;
+                display: flex;
+                justify-content: center;
         }
 
         input[type=submit] {
@@ -27,7 +21,7 @@
                 display: inline-block;
                 font-size: 16px;
                 border-radius: 8px;
-                font-size: 40px;
+                font-size: 35px;
             }
 
         input[type=reset] {
@@ -39,19 +33,37 @@
                 display: inline-block;
                 font-size: 16px;
                 border-radius: 8px;
-                font-size: 40px;
+                font-size: 35px;
         }
 
-        form{
-            font-size: 40px;
-            font-family: 'Nunito';
-        }
-        
         .text {
             font-size: 40px;
             font-family: "Nunito";
-            display: flex;
-            justify-content: center;
+        }
+
+        form{
+            float: left;
+            clear: right;
+            margin-right: 20px; 
+            font-size: 40px;
+            font-family: 'Nunito';
+        }
+
+        h3{
+            font-family: 'Nunito';
+            color: #DF5043;
+            font-weight: 900;
+            font-size: 60px;
+            text-align: center
+        }
+
+        h4{
+            font-family: 'Nunito';
+            color: black;
+            font-size: 40px;
+            text-align: center;
+            padding-bottom: 0;
+            
         }
 
     </style>
@@ -77,30 +89,25 @@
         <br>
         <br>
 
+        <div class = "text">
+        <h4>Your flow rate will be:</h4>
+        <h3>{{ flow_rate }} mL/min</h3>
+        </div>        
 
         <div class = "text">
-            Your flow rate will be: 
-            <br>
-            {{ flow_rate }} mL/min
-            <br>
-            <br>
-
-
-            Your feed duration will be:
-            <br>
-            {{ feed_dur }} min
-            <br>
-            <br>
-            <br>
+        <h4>Your feed duration will be:</h4> 
+        <h3>{{ feed_dur }} min</h3>
         </div>
-        
+
+        <div class="center">
         <form class="text" method="POST" action="/input2/">
 	        <input type="reset" value="go back" />
         </form>
 
-        <form class="text" method="POST" action="/plunge/">
+        <form class="text" method="POST" action="/set_height/">
             <input type="submit" value="confirm" />
         </form>
+        </div>
                 
     </body>
 </html>
