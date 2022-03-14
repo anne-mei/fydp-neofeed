@@ -73,9 +73,9 @@ try:
         
         return render_template('confirm.html',flow_rate = input_flow_rate,feed_dur = feed_dur)
 
-    @app.route('/plunge/',methods = ['POST'])
+    '''@app.route('/plunge/',methods = ['POST'])
     def plunge():
-        return render_template('plunge.html')
+        return render_template('plunge.html')'''
 
 
     @app.route('/set_height/',methods = ['POST'])
@@ -84,7 +84,7 @@ try:
         motor.initialize_motor()
         return render_template('set_height.html')
 
-    @app.route('/initialize_height/')
+    @app.route('/initialize_height/',methods = ['POST'])
     def initialize_height():
         
         time_elapsed = 0
@@ -115,7 +115,6 @@ try:
         #Determine feed duration and current flow_rate
         feed_dur_milli = session['feed_dur']*60*1000
         flow_rate = str(flow_sensor.current_flow_rate) + ' mL/min'
-        if flow_rate == '-100 mL/min':        
         #Determine the avg flow rate over 10 flow rates, compare diff from flow rate input from user
         '''
         session['pause'] = session['pause'] + 1
