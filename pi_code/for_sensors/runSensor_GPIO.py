@@ -18,7 +18,6 @@ else:
 
 class runSensor_GPIO:
     def __init__(self):
-        self.hx = HX711(5, 6)
         self.rn = RunningMedian(50)
         self.flow_rates = []
         self.filter_window = FilterWindow(WINDOW_WIDTH_RAW,FPS)
@@ -27,7 +26,7 @@ class runSensor_GPIO:
         self.stop = False
     def initialize_sensor(self):
         referenceUnit = -2390
-
+        self.hx = HX711(5, 6)
         #Set reference unit and tare scale
         self.hx.set_reading_format("MSB", "MSB")
         self.hx.set_reference_unit(referenceUnit)
@@ -36,7 +35,7 @@ class runSensor_GPIO:
         
     def cleanAndExit(self):
         self.stop = True
-        #self.thread.join()
+        self.thread.join()
         #Cleanup GPIO
         print("Cleaning...")
 
@@ -44,7 +43,6 @@ class runSensor_GPIO:
             GPIO.cleanup()
             
         print("Bye!")
-        sys.exit()
         
     def save_data(self):
         #save_data
@@ -94,7 +92,7 @@ class runSensor_GPIO:
     def start_thread(self):
         self.thread = threading.Thread(target=self.return_flow_rate)
         self.thread.start()
-'''
+
 #for testing
 flow_sensor = runSensor_GPIO()
 flow_sensor.initialize_sensor()
@@ -103,4 +101,3 @@ try:
 except KeyboardInterrupt:
     flow_sensor.save_data()
     flow_sensor.cleanAndExit()
-'''

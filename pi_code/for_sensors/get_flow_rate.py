@@ -36,7 +36,7 @@ def get_flow_rate(sensor_data, flow_rate_sig):
         
         # load sensor calibration
         calibration_factor = 0.54 #1.2 
-        curr_flowrate_val = round(calibration_factor * curr_flowrate_val, 1) #2)
+        curr_flowrate_val = round(calibration_factor * curr_flowrate_val, 2)  # 1
         
     else:
         print('len fl signal:', len(flow_rate_sig))

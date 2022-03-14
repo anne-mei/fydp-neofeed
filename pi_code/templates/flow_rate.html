@@ -46,24 +46,20 @@
       fetch(`http://${location.host}/flow_rate`)  // send request to route /update
         .then((resp) => resp.json())
         .then(function(response) {
-          let flow_rate = response.data;
-          console.log(flow_rate);
-          if (flow_rate == '-100 mL/min')
+          let flow_rate = response.data.replace('-100 mL/min','Processing...');
+          document.getElementById('test').innerHTML =flow_rate;
+          if (flow_rate != 'Processing...')
           {
-            document.getElementById('test').innerHTML ='Processing..';
-          }
-          else
-          {
-            document.getElementById('test').innerHTML =flow_rate;
-            /*
-            let flow_rate_number = flow_rate.replace(' mL/min','').toFixed(2);
-            console.log(flow_rate_number)
-            if flow_rate_number>2
-            {
-              window.location.href = "http://127.0.0.1:5000/flow_rate_error";
-            }*/
+            let flow_rate_number = Number(flow_rate.replace(' mL/min',''));
+            console.log(response.dangerous_flow_detected.toFixed());
             
+            if (flow_rate_number>2 && response.dangerous_flow_detected.toFixed()==0)
+            {
+                window.location.href = "http://127.0.0.1:5000/flow_rate_error";
+            }
+          
           }
+
           document.getElementById('time_elapsed').innerHTML =response.time_elapsed;
           setTimeout(function(){window.location.href = "http://127.0.0.1:5000/finish"},response.feed_dur);
       });

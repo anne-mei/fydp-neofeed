@@ -63,7 +63,6 @@ try:
         session['feed_dur'] = feed_dur
         session['input_flow_rate'] = input_flow_rate
         session['baby_pressure'] = baby_pressure
-        session['time_elapsed'] = 0
         session['height_diff_babyandbox'] = float(request.form['height_diff_babyandbox']) #Height diff between baby and box in cm
         
         if syringe_vol == '30 mL':
@@ -84,7 +83,7 @@ try:
         motor.initialize_motor()
         return render_template('set_height.html')
 
-    @app.route('/initialize_height/',methods = ['POST'])
+    @app.route('/initialize_height/',methods = ['GET','POST'])
     def initialize_height():
         
         time_elapsed = 0
@@ -99,15 +98,20 @@ try:
         #Initialize sensor and startflow sensor readings
         flow_sensor.initialize_sensor()
         flow_sensor.start_thread()
+        session['dangerous_flow_detected'] = 0
         
         #move motor to required height
         motor.change_motor_height(height,True)
+        
+        #reset time elapsed
+        session['time_elapsed'] = 0
 
         return render_template('flow_rate.html')
 
 
     @app.route('/flow_rate/')
     def flow_rate():
+        
         #Determine time elapsed
         session['time_elapsed'] =session['time_elapsed'] + 1
         time_elapsed_formatted = str(datetime.timedelta(seconds=session['time_elapsed']))
@@ -115,6 +119,10 @@ try:
         #Determine feed duration and current flow_rate
         feed_dur_milli = session['feed_dur']*60*1000
         flow_rate = str(flow_sensor.current_flow_rate) + ' mL/min'
+        
+        #Determine if dangerous flow was previously deflected
+        dangerous_flow_detected = session['dangerous_flow_detected']
+        
         #Determine the avg flow rate over 10 flow rates, compare diff from flow rate input from user
         '''
         session['pause'] = session['pause'] + 1
@@ -132,28 +140,28 @@ try:
             pause = 0
         '''    
         #Send data to html
-        templateData = {'data' : flow_rate,'time_elapsed': time_elapsed_formatted,'feed_dur':feed_dur_milli}
+        templateData = {'data' : flow_rate,'time_elapsed': time_elapsed_formatted,'feed_dur':feed_dur_milli, 'dangerous_flow_detected': dangerous_flow_detected}
         return jsonify(templateData), 200
 
     @app.route('/finish/')
     def finish():
-        pause = 0
         return render_template('finish.html')
 
     @app.route('/return_height/')
     def return_height():
         
         #Clean flow sensor pigpio pins and return motor to base height
-        #flow_sensor.cleanAndExit()
+        flow_sensor.cleanAndExit()
         motor.return_to_base_height()
         motor.previous_height = 0
         return render_template('return_height.html')
     
     @app.route('/flow_rate_error/')
     def flow_rate_error():
-        #flow_sensor.cleanAndExit()
         motor.return_to_base_height()
         motor.previous_height = 0
+        flow_sensor.cleanAndExit()
+        session['dangerous_flow_detected'] = 1
         return render_template('flow_rate_error.html')
 
     # Run the app on the local development server

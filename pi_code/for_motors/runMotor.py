@@ -9,7 +9,7 @@ import sys
 import time
 import RPi.GPIO as GPIO
 
-GPIO.setmode(GPIO.BCM)
+#GPIO.setmode(GPIO.BCM)
 '''
 #Define GPIO signals to use
 # Set all pins as output
