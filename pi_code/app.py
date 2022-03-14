@@ -56,7 +56,6 @@ def confirm():
     feed_dur = float(request.form['feed_dur']) #Feed duration in min
     syringe_vol = str(request.form['syringe_vol']) # Either 30mL or 50mL
     feed_vol = float(request.form['feed_vol']) #Feed vol in mL
-    height_diff_babyandbox = float(request.form['height_diff_babyandbox']) #Height diff between baby and box in cm
 
     #Calculate flow rate
     input_flow_rate = feed_vol/feed_dur #flow rate in mL/min
@@ -67,7 +66,7 @@ def confirm():
     session['input_flow_rate'] = input_flow_rate
     session['baby_pressure'] = baby_pressure
     session['time_elapsed'] = 0
-    session['height_diff_babyandbox'] = float(request['height_diff_babyandbox'])
+    session['height_diff_babyandbox'] = float(request.form['height_diff_babyandbox']) #Height diff between baby and box in cm
     
     if syringe_vol == '30 mL':
         session['is_30_mL'] = True
@@ -109,8 +108,7 @@ def initialize_height():
 @app.route('/flow_rate/')
 def flow_rate():
     #Determine time elapsed
-    time = session['time_elapsed']
-    session['time_elapsed'] =time + 1
+    session['time_elapsed'] =session['time_elapsed'] + 1
     time_elapsed_formatted = str(datetime.timedelta(seconds=session['time_elapsed']))
     
     #Determine feed duration and current flow_rate
@@ -118,7 +116,8 @@ def flow_rate():
     flow_rate = flow_sensor.current_flow_rate
     
     #Determine the avg flow rate over 10 flow rates, compare diff from flow rate input from user
-    pause = pause + 1
+    '''
+    session['pause'] = session['pause'] + 1
     if len(flow_sensor.flow_rates>60):
         avg_flow_rate = np.average(math.floor(flow_sensor.flow_rates[:-10]))
         
@@ -131,7 +130,7 @@ def flow_rate():
     elif diff_flow<-0.3 and pause>=60:
         motor.change_motor_height(0.01,True)
         pause = 0
-        
+    '''    
     #Send data to html
     templateData = {'data' : flow_rate,'time_elapsed': time_elapsed_formatted,'feed_dur':feed_dur_milli}
     print(flow_sensor.thread.is_alive())
@@ -148,6 +147,7 @@ def return_height():
     #Clean flow sensor pigpio pins and return motor to base height
     flow_sensor.cleanAndExit()
     motor.return_to_base_height()
+    motor.previous_height = 0
     return render_template('return_height.html')
 
 # Run the app on the local development server

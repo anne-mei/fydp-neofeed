@@ -31,9 +31,19 @@ class runSensor_PIGPIO:
 
     def initialize_sensor(self):
         time.sleep(2)
-        self.s.set_callback(None)
+
         self.s.set_mode(self.CH_A_GAIN_64)
+
+        self.s.start()
+
+        self.s.set_callback(None)
+
+        print("Change mode to CH_A_GAIN_128")
+
+        print("Cancel callback and read manually")
+
         self.c, mode, reading = self.s.get_reading()
+
         
     def cleanAndExit(self):
         self.stop = True
@@ -80,7 +90,7 @@ class runSensor_PIGPIO:
                 
             #Find overall average
             avg_weight = total_weight/avg_count
-            #print("current weight",avg_weight)
+            print("current weight",avg_weight)
 
 
             #Get array of averages
@@ -92,6 +102,7 @@ class runSensor_PIGPIO:
             
             #save_data
             self.total_avg_weights.append(avg_weight)
+            time.sleep(0.1)
             if self.stop:
                 break
             

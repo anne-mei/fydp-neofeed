@@ -1,6 +1,6 @@
-from runSensor import runSensor
+from runSensor_PIGPIO import runSensor_PIGPIO
 import time
-flow_sensor = runSensor()
+flow_sensor = runSensor_PIGPIO()
 flow_sensor.initialize_sensor()
 flow_sensor.start_thread()
 for i in range(500):
