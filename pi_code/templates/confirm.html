@@ -30,30 +30,70 @@
                 font-size: 40px;
             }
 
+        input[type=reset] {
+                background-color: #c03131; 
+                border: none;
+                color: white;
+                padding: 15px 32px;
+                text-align: center;
+                display: inline-block;
+                font-size: 16px;
+                border-radius: 8px;
+                font-size: 40px;
+        }
+
         form{
+            font-size: 40px;
 
         }
+        
+
     </style>
 
     <body>
         <br>
         <br>
         <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
 
-        <div class="center">
+
+        <form method="POST" action="/input2/">
+            <div class="center">Your flow rate will be: 
+            <br>
+            {{ flow_rate }} mL/min
+            <br>
+            <br>
+            </div>
+
+            <div class="center">Your feed duration will be:
+            <br>
+            {{ feed_dur }} min
+            <br>
+            <br>
+            <br>
+            </div>
+            
+	        <input type="reset" value="go back" />
+        </form>
 
         <form method="POST" action="/set_height/">
-            <div>Your flow rate will be: </div>
-            <br>
-            <div>{{ flow_rate }} mL/min</div>
-            <div>Your feed duration will be:</div>
-            <br>
-            <div> {{ feed_dur }} min</div>
-            <br>
-            <br>
-	    <input type="submit" value="confirm" />
+            <input type="submit" value="confirm" />
         </form>
-        </div> 
-        
+                
     </body>
 </html>
