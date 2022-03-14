@@ -25,7 +25,6 @@ from get_feed_volume import get_feed_volume
 flow_sensor = runSensor_PIGPIO()
 flow_sensor.initialize_sensor()
 motor = runMotor()
-motor.initialize_motor()
 pause = 0
 
 app = Flask(__name__)
@@ -45,7 +44,6 @@ try:
         
         #Calculate feed vol
         feed_vol = get_feed_volume(weight, feed_session, feed_day) # Feed vol in mL
-        #feed_vol = 6
         return render_template('input2.html',feed_vol = feed_vol)
 
 
@@ -59,7 +57,7 @@ try:
 
         #Calculate flow rate
         input_flow_rate = feed_vol/feed_dur #flow rate in mL/min
-        baby_pressure = 0#Feed pressure in Pa (irl would be 8mmHg)
+        baby_pressure = 0 #Feed pressure in Pa (irl would be 8mmHg)
 
         #Store variables in session
         session['feed_dur'] = feed_dur
@@ -87,7 +85,8 @@ try:
     @app.route('/initialize_height/')
     def initialize_height():
         
-        #start flow sensor readings
+        #Initialize sensor and startflow sensor readings
+        flow_sensor.initialize_sensor()
         flow_sensor.start_thread()
         time_elapsed = 0
         
@@ -97,9 +96,9 @@ try:
         is_30_mL = session.get('is_30_mL',None)
         height_diff_babyandbox = session.get('height_diff_babyandbox',None)
         height = HeightCalibration(input_flow_rate,baby_pressure,is_30_mL,height_diff_babyandbox).return_req_height()
-        
 
         #move motor to required height
+        motor.initialize_motor()
         motor.change_motor_height(height,True)
 
         return render_template('flow_rate.html')
@@ -133,7 +132,6 @@ try:
         '''    
         #Send data to html
         templateData = {'data' : flow_rate,'time_elapsed': time_elapsed_formatted,'feed_dur':feed_dur_milli}
-        print(flow_sensor.thread.is_alive())
         return jsonify(templateData), 200
 
     @app.route('/finish/')
@@ -153,6 +151,7 @@ try:
     # Run the app on the local development server
     if __name__ == "__main__":
         app.run()
+        
 except KeyboardInterrupt:
     GPIO.output( 18, False )
     GPIO.output( 22, False )
