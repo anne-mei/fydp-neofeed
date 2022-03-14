@@ -70,7 +70,7 @@
       padding: 15px;
     }
 
-    button {
+    input[type=submit] {
       background-color: #4CAF50; 
       border: none;
       color: white;
@@ -80,7 +80,7 @@
       font-size: 16px;
       border-radius: 8px;
       font-size: 35px;
-    }
+      }
 
 
 </style>
@@ -89,15 +89,27 @@
     <div id="modal1" class="overlay">
       <div class="modal">
         <h2 style="font-family: 'Nunito';" class="center" >Plunge Syringe!</h2>
+
         <div class="content">
         <p>Please ensure that the syringe has been plunged.</p>
         </div>
+
         <br>
+
+        
         <div class="center">
-          <button id="myButton" class="float-left submit-button" >ok</button>
+          <form class="text">
+            <input type="submit" value="ok" onClick="navigate()"/>
+          </form>        
         </div>
 
-    </div>
+        <script>
+          function navigate() {
+            window.location.href="http://127.0.0.1:5000/flow_rate_setter";  
+          }
+        </script>
+
+      </div>
     </div>
 
   </body>
