@@ -95,7 +95,7 @@ try:
         is_30_mL = session.get('is_30_mL',None)
         height_diff_babyandbox = session.get('height_diff_babyandbox',None)
         height = HeightCalibration(input_flow_rate,baby_pressure,is_30_mL,height_diff_babyandbox).return_req_height()    
-
+        print(height)
         session['dangerous_flow_detected'] = 0
         
         #move and initialize motor to required height

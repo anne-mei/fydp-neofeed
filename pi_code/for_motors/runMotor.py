@@ -60,7 +60,7 @@ class runMotor():
         GPIO.setup(22,GPIO.OUT) # direction control pin = 22
         
         # Initialise variables
-        WaitTime = 0.05 # changed to 500ms
+        WaitTime = 0.025 # changed to 500ms
         stepCounter = 0
         stepsToRotate = height*1000*(1/0.3) # convert meters to steps (1 step = 0.3mm)
         
@@ -70,10 +70,10 @@ class runMotor():
   
         #Initialize if motor moves up or down and set GPIO
         if moves_up:
-            GPIO.output( 22, GPIO.HIGH) # high is clockwise and low is counterclockwise
+            GPIO.output( 22, GPIO.LOW) # high is clockwise and low is counterclockwise
             self.previous_height = self.previous_height+height
         else:
-            GPIO.output(22,GPIO.LOW)
+            GPIO.output(22,GPIO.HIGH)
             self.previous_height = self.previous_height-height
             
         #Move motor determined amount of steps
@@ -88,5 +88,8 @@ class runMotor():
         GPIO.output( 18, False )
         GPIO.output( 22, False )
         return height
-
-        
+'''
+motor = runMotor()
+motor.initialize_motor()
+motor.change_motor_height(0.05,False)
+'''
