@@ -158,16 +158,19 @@ try:
 
     @app.route('/return_height/')
     def return_height():
-        
+        motor.return_to_base_height()
+        motor.previous_height = 0
+        session.clear()
+        flow_sensor.cleanAndExit()
         #Clean flow sensor pigpio pins and return motor to base height
         return render_template('return_height.html')
 
-    @app.route('/reset_app/',methods ['POST'])
+    @app.route('/reset_app/',methods = ['POST'])
     def reset_app():
         motor.return_to_base_height()
-        flow_sensor.cleanAndExit()
         motor.previous_height = 0
         session.clear()
+        flow_sensor.cleanAndExit()
         return render_template('input1.html')
     
     # Run the app on the local development server

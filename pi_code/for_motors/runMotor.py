@@ -8,14 +8,14 @@ from time import sleep      # Import sleep module from time library
 import sys
 import time
 import RPi.GPIO as GPIO
-
-#GPIO.setmode(GPIO.BCM)
 '''
+GPIO.setmode(GPIO.BCM)
+
 #Define GPIO signals to use
 # Set all pins as output
-GPIO.output( 18, GPIO.LOW )
-GPIO.output( 22, GPIO.LOW )
-GPIO.cleanup()
+#GPIO.output( 18, GPIO.LOW )
+#GPIO.output( 22, GPIO.LOW )
+#GPIO.cleanup()
 #p#rint("Setting up pins")
 GPIO.setup(18,GPIO.OUT) # step control pin = 18
 GPIO.output(18, False) 
