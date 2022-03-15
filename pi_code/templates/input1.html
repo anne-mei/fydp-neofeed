@@ -5,7 +5,7 @@
         <style>
             label {
                 font-family: 'Nunito';
-                font-size: 40px;
+                font-size: 35px;
             }
             
             body {
@@ -17,6 +17,9 @@
             .center {
                 display: flex;
                 justify-content: center;
+                padding-right: 50px;
+                padding-left: 50px;
+                padding-bottom: 30px;
             }
 
             input[type=number] { 
@@ -25,8 +28,7 @@
                 margin: 8px 0;
                 box-sizing: border-box;
                 border: 3px solid #ccc;
-                font-size: 40px;
-
+                font-size: 35px;
             }       
 
             input[type=text] { 
@@ -35,7 +37,7 @@
                 margin: 8px 0;
                 box-sizing: border-box;
                 border: 3px solid #ccc;
-                font-size: 40px;
+                font-size: 35px;
             }       
 
             input[type=submit] {
@@ -47,15 +49,14 @@
                 display: inline-block;
                 font-size: 16px;
                 border-radius: 8px;
-                font-size: 40px;
-                
+                font-size: 35px;
+                font-family: 'Nunito';
             }
 
         </style>
     </head>
 
 <body>
-    <br><br>
     <br><br>
     <br><br>
     <br><br>
@@ -72,17 +73,15 @@
             <label for="feed_day">Feeding day:</label>
             <input type="number" placeholder=" " id="feed_day" name="feed_day" min="0" value="0" step="1" inputmode="numeric">
             <br><br>
-            <br><br>
             <label for="feed_session">Feeding session:</label>
             <input type="number" placeholder=" " id="feed_session" name="feed_session" min="0" value="0" step="1" inputmode="numeric">
             <br><br>
-            <br><br>
             <label for="infant_weight">Infant weight:</label>
-            <input type="number" placeholder=" " id="infant_weight" name="infant_weight" min="0" value="0" step="0.1" inputmode="decimal" ><span style="margin-left:-70px; font-size: 40px; font-family: Nunito;">kg</span>
+            <input type="number" placeholder=" " id="infant_weight" name="infant_weight" min="0" value="0" step="0.1" inputmode="decimal" ><span style="margin-left:-70px; font-size: 35px; font-family: Nunito;">kg</span>
             <br><br>
             <br><br>
 
-            <input type="submit" value="Next" />
+            <input type="submit" value="Next" style="float: right;"/>
         </form>    
     </div> 
 </body>

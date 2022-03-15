@@ -5,7 +5,7 @@
         <style>
             label {
                 font-family: 'Nunito';
-                font-size: 40px;
+                font-size: 35px;
             }
 
             body {
@@ -17,6 +17,10 @@
             .center {
                 display: flex;
                 justify-content: center;
+                padding-right: 50px;
+                padding-left: 50px;
+                padding-bottom: 30px;
+
             }
 
             input[type=number] { 
@@ -25,7 +29,7 @@
                 margin: 8px 0;
                 box-sizing: border-box;
                 border: 3px solid #ccc;
-                font-size: 40px;
+                font-size: 35px;
             }       
 
             input[type=text] { 
@@ -34,7 +38,7 @@
                 margin: 8px 0;
                 box-sizing: border-box;
                 border: 3px solid #ccc;
-                font-size: 40px;
+                font-size: 35px;
             }       
             
             select{
@@ -43,15 +47,8 @@
                 margin: 8px 0;
                 box-sizing: border-box;
                 border: 3px solid #ccc;
-                font-size: 40px;
-            }
-
-            #syringe_vol option{ 
-                font-size: 15px; 
-                font-family: 'Nunito';
-                max-width: 10px;
-                min-width: 10px;
-                width: 10px !important;
+                font-size: 35px;
+                font-family: 'Nunito'
             }
 
             input[type=submit] {
@@ -63,17 +60,13 @@
                 display: inline-block;
                 font-size: 16px;
                 border-radius: 8px;
-                font-size: 40px;
+                font-size: 35px;
+                font-family: 'Nunito';
             }
 
             input value{
                 font-family: 'Nunito';
             }
-
-
-            /* .dropdown {
-                width: 200px;
-            } */
 
         </style>
     </head>
@@ -87,39 +80,35 @@
     <br><br>
     <br><br>
     <br><br>
-    <br><br>
-    <br><br>
 
 
     <div class="center">
         <form method = "POST" action="/confirm/">
             <label for="feed_vol">Feed volume:</label>
-            <input type="number" id="feed_vol" name="feed_vol" min="0" value='{{ feed_vol }}' step="0.5" inputmode="decimal"><span style="margin-left:-80px; font-size: 40px; font-family: Nunito;">mL</span>
+            <input type="number" id="feed_vol" name="feed_vol" min="0" value='{{ feed_vol }}' step="0.5" inputmode="decimal"><span style="margin-left:-80px; font-size: 35px; font-family: Nunito;">mL</span>
 
-            <br><br>
             <br><br>
 
             <label for="feed_dur">Feed session length:</label>
-            <input type="number" id="feed_dur" name="feed_dur" min="0" value="0" step="1"><span style="margin-left:-80px; font-size: 40px; font-family: Nunito;">min</span>
+            <input type="number" id="feed_dur" name="feed_dur" min="0" value="0" step="1"><span style="margin-left:-80px; font-size: 35px; font-family: Nunito;">min</span>
 
-            <br><br>
             <br><br>
 
             <label for="syringe_vol">Syringe volume:</label>
-            <select class = 'dropdown' name="syringe_vol" id="syringe_vol" style="font-size: 40px;" >
+            <select class = 'dropdown' name="syringe_vol" id="syringe_vol" style="font-size: 35px;" ><span style="font-family: Nunito;"></span>
+
                 <option value="30 mL">30 mL</option>
                 <option value="50 mL">50 mL</option>
             </select>
 
             <br><br>
-            <br><br>
             
             <label for="height_diff_babyandbox">Distance from infant to device base:</label>
-            <input type="number" id="height_diff_babyandbox" name="height_diff_babyandbox" min="0" value="0" step="0.1" inputmode="decimal"><span style="margin-left:-80px; font-size: 40px; font-family: Nunito;">cm</span>
+            <input type="number" id="height_diff_babyandbox" name="height_diff_babyandbox" min="0" value="0" step="0.1" inputmode="decimal"><span style="margin-left:-80px; font-size: 35px; font-family: Nunito;">cm</span>
             <br><br>
             <br><br>
 
-            <input type="submit" value="Next" />
+            <input type="submit" value="Next" style = "float: right;"/>
         </form>    
     </div> 
 </body>
