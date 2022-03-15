@@ -100,9 +100,15 @@
         </div>
 
         <div class="center">
-        <form class="text" method="POST" action="/input2/">
-	        <input type="reset" value="go back" />
+        <form class="text">
+	        <input type="reset" value="go back" id="returnButton" />
         </form>
+
+        <script>
+            document.getElementById("stopButton").onclick = function () {
+            window.location.href = "http://127.0.0.1:5000/input2";
+        };
+        </script>
 
         <form class="text" method="POST" action="/set_height/">
             <input type="submit" value="confirm" />
