@@ -44,6 +44,7 @@ try:
         
         #Calculate feed vol
         session['feed_vol'] = get_feed_volume(weight, feed_session, feed_day) # Feed vol in mL
+        print(session['feed_vol'])
         return render_template('input2.html',feed_vol = session['feed_vol'], feed_dur = 0, height_diff_babyandbox = 0)
 
     @app.route('/input2_back/', methods=['GET','POST'])
@@ -99,8 +100,8 @@ try:
         session['dangerous_flow_detected'] = 0
         
         #move and initialize motor to required height
-        #motor.initialize_motor()
-        #motor.change_motor_height(height,True)
+        motor.initialize_motor()
+        motor.change_motor_height(height,True)
     
         if session['plunged']  == 1:
             #Initialize sensor and startflow sensor readings

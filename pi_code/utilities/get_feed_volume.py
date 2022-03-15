@@ -51,8 +51,9 @@ def get_feed_volume(weight, session_num, day_num):
     with open(os.path.join(feed_csv_folder, csv_name), encoding='utf-8-sig') as file_name:
         dict_reader = DictReader(file_name)
         list_of_dict = list(dict_reader)
-
-    feed_volume_csv = float(list_of_dict[day_num-1]['feedsession' + str(int(session_num))])
+    print(day_num-1)
+    print(session_num)
+    feed_volume_csv = float(list_of_dict[int(day_num-1)]['feedsession' + str(int(session_num))])
     return feed_volume_csv
 
 # # example on how to call
