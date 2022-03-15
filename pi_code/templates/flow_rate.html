@@ -103,10 +103,10 @@
             let flow_rate_number = Number(flow_rate.replace(' mL/min',''));
             console.log(response.dangerous_flow_detected.toFixed());
             
-            if (flow_rate_number>2 && response.dangerous_flow_detected.toFixed()==0)
-            {
-                window.location.href = "http://127.0.0.1:5000/flow_rate_error";
-            }
+            //if (flow_rate_number>2 && response.dangerous_flow_detected.toFixed()==0)
+            //{
+            //   window.location.href = "http://127.0.0.1:5000/flow_rate_error";
+            //}
           
           }
           else{

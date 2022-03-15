@@ -77,7 +77,7 @@ class runMotor():
             self.previous_height = self.previous_height-height
             
         #Move motor determined amount of steps
-        for stepCounter in range(int(stepsToRotate)):
+        for stepCounter in range(abs(int(stepsToRotate))):
             #for pin in range(0, 4):
             GPIO.output(18, GPIO.HIGH)
             time.sleep(WaitTime/2)
@@ -91,5 +91,5 @@ class runMotor():
 '''
 motor = runMotor()
 motor.initialize_motor()
-motor.change_motor_height(0.04,True)
+motor.change_motor_height(0.03,False)
 '''

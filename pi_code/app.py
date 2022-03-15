@@ -89,19 +89,20 @@ try:
     def initialize_height():
         
         time_elapsed = 0
-        
+        session['ran_error'] = False
         #Get required height
         input_flow_rate = session.get('input_flow_rate', None)
         baby_pressure = session.get('baby_pressure',None)
         is_30_mL = session.get('is_30_mL',None)
         height_diff_babyandbox = session.get('height_diff_babyandbox',None)
-        height = HeightCalibration(input_flow_rate,baby_pressure,is_30_mL,height_diff_babyandbox).return_req_height()    
+        session['height'] = HeightCalibration(input_flow_rate,baby_pressure,is_30_mL,height_diff_babyandbox).return_req_height()    
+        session
         #print(height)
         session['dangerous_flow_detected'] = 0
         
         #move and initialize motor to required height
         motor.initialize_motor()
-        motor.change_motor_height(height,True)
+        motor.change_motor_height(session['height'],True)
     
         if session['plunged']  == 1:
             #Initialize sensor and startflow sensor readings
@@ -165,10 +166,14 @@ try:
 
     @app.route('/flow_rate_error/')
     def flow_rate_error():
-        motor.return_to_base_height()
+        print('boolean',session['ran_error'])
+        if session['ran_error'] is False:
+            session['ran_error'] = True
+            motor.change_motor_height(session['height'],False)
         flow_sensor.cleanAndExit()
         motor.previous_height = 0
         session['dangerous_flow_detected'] = 1
+        
         return render_template('flow_rate_error.html')
     
     @app.route('/finish/')
@@ -178,6 +183,7 @@ try:
     @app.route('/return_height/')
     def return_height():
         motor.return_to_base_height()
+        
         motor.previous_height = 0
         session.clear()
         flow_sensor.cleanAndExit()
@@ -187,9 +193,9 @@ try:
     @app.route('/reset_app/',methods = ['GET','POST'])
     def reset_app():
         motor.return_to_base_height()
-        motor.previous_height = 0
         session.clear()
         flow_sensor.cleanAndExit()
+        motor.previous_height = 0
         return render_template('input1.html')
     
     # Run the app on the local development server
