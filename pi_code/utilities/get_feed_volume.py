@@ -1,6 +1,7 @@
 import os
 import numpy as np
-import pandas as pd
+# import pandas as pd
+from csv import DictReader
 
 curr_folder = os.path.dirname(os.path.abspath(__file__))
 feed_csv_folder = os.path.join(curr_folder, '..', 'feed_volume_charts')
@@ -44,12 +45,17 @@ def get_feed_volume(weight, session_num, day_num):
     print('accessing', csv_name)
 
     # access csv file for feed volume
-    df = pd.read_csv(os.path.join(feed_csv_folder, csv_name), index_col=0)
-    feed_volume = df.loc[day_num, 'feedsession' + str(int(session_num))]
+    # df = pd.read_csv(os.path.join(feed_csv_folder, csv_name), index_col=0)
+    # feed_volume_df = df.loc[day_num, 'feedsession' + str(int(session_num))]
 
-    return feed_volume
+    with open(os.path.join(feed_csv_folder, csv_name), encoding='utf-8-sig') as file_name:
+        dict_reader = DictReader(file_name)
+        list_of_dict = list(dict_reader)
 
-# example on how to call
+    feed_volume_csv = float(list_of_dict[day_num-1]['feedsession' + str(int(session_num))])
+    return feed_volume_csv
+
+# # example on how to call
 # feed_volume = get_feed_volume(0.5, 7, 6)
 # print(feed_volume)
 
