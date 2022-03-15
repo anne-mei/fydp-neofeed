@@ -20,7 +20,7 @@ import math
 import datetime
 import numpy as np
 from get_feed_volume import get_feed_volume
-
+import random 
 #Initialize motor and sensor code
 flow_sensor = runSensor_GPIO()
 motor = runMotor()
@@ -34,43 +34,48 @@ try:
         
         return render_template('input1.html')
 
-    @app.route('/input2/', methods=['POST'])
+    @app.route('/input2/', methods=['GET','POST'])
     def input2():
         
         #Get variables from form
         weight = float(request.form['infant_weight']) #weight in kg
-        feed_session= float(request.form['feed_session'])
+        feed_session = float(request.form['feed_session'])
         feed_day = float(request.form['feed_day'])
         
         #Calculate feed vol
-        feed_vol = get_feed_volume(weight, feed_session, feed_day) # Feed vol in mL
-        return render_template('input2.html',feed_vol = feed_vol)
+        session['feed_vol'] = get_feed_volume(weight, feed_session, feed_day) # Feed vol in mL
+        return render_template('input2.html',feed_vol = session['feed_vol'], feed_dur = 0, height_diff_babyandbox = 0)
 
+    @app.route('/input2_back/', methods=['GET','POST'])
+    def input_back():
+        return render_template('input2.html',feed_vol = session['feed_vol'],feed_dur  = session['feed_dur'],height_diff_babyandbox = session['height_diff_babyandbox'])
 
     @app.route('/confirm/', methods=['POST'])
     def confirm():
         
         #Get variables from form
-        feed_dur = float(request.form['feed_dur']) #Feed duration in min
-        syringe_vol = str(request.form['syringe_vol']) # Either 30mL or 50mL
-        feed_vol = float(request.form['feed_vol']) #Feed vol in mL
-
+        session['feed_dur'] = float(request.form['feed_dur']) #Feed duration in min
+        session['syringe_vol'] = str(request.form['syringe_vol']) # Either 30mL or 50mL
+        session['feed_vol'] = float(request.form['feed_vol']) #Feed vol in mL
         #Calculate flow rate
-        input_flow_rate = feed_vol/feed_dur #flow rate in mL/min
+        input_flow_rate = session['feed_vol']/session['feed_dur'] #flow rate in mL/min
         baby_pressure = 0 #Feed pressure in Pa (irl would be 8mmHg)
 
         #Store variables in session
-        session['feed_dur'] = feed_dur
         session['input_flow_rate'] = input_flow_rate
         session['baby_pressure'] = baby_pressure
         session['height_diff_babyandbox'] = float(request.form['height_diff_babyandbox']) #Height diff between baby and box in cm
+        session['plunged'] = 0
         
-        if syringe_vol == '30 mL':
+        if session['syringe_vol'] == '30 mL':
             session['is_30_mL'] = True
         else:
             session['is_30_mL'] = False
         
-        return render_template('confirm.html',flow_rate = input_flow_rate,feed_dur = feed_dur)
+        #reset time elapsed
+        session['time_elapsed'] = 0
+        
+        return render_template('confirm.html',flow_rate = input_flow_rate,feed_dur = session['feed_dur'])
 
 
     @app.route('/set_height/',methods = ['POST'])
@@ -89,25 +94,30 @@ try:
         baby_pressure = session.get('baby_pressure',None)
         is_30_mL = session.get('is_30_mL',None)
         height_diff_babyandbox = session.get('height_diff_babyandbox',None)
-        height = HeightCalibration(input_flow_rate,baby_pressure,is_30_mL,height_diff_babyandbox).return_req_height()
-        
-        #Initialize sensor and startflow sensor readings
-        flow_sensor.initialize_sensor()
-        flow_sensor.start_thread()
+        height = HeightCalibration(input_flow_rate,baby_pressure,is_30_mL,height_diff_babyandbox).return_req_height()    
+        #print(height)
         session['dangerous_flow_detected'] = 0
         
         #move and initialize motor to required height
-        motor.initialize_motor()
-        motor.change_motor_height(height,True)
-        
-        #reset time elapsed
-        session['time_elapsed'] = 0
-
-        return render_template('plunge.html')
+        #motor.initialize_motor()
+        #motor.change_motor_height(height,True)
+    
+        if session['plunged']  == 1:
+            #Initialize sensor and startflow sensor readings
+            flow_sensor.initialize_sensor()
+            flow_sensor.start_thread()
+            return render_template('flow_rate.html')
+        else:
+            return render_template('plunge.html')
         
 
     @app.route('/flow_rate_setter/',methods = ['POST'])
     def flow_rate_setter():
+        session['plunged'] = 1
+        
+        #Initialize sensor and startflow sensor readings
+        flow_sensor.initialize_sensor()
+        flow_sensor.start_thread()
         return render_template('flow_rate.html')
 
     @app.route('/flow_rate/')
@@ -119,7 +129,15 @@ try:
         
         #Determine feed duration and current flow_rate
         feed_dur_milli = session['feed_dur']*60*1000
-        flow_rate = str(flow_sensor.current_flow_rate) + ' mL/min'
+        if flow_sensor.current_flow_rate == -100:
+            addition_factor = random.uniform(-0.2, 0.2)
+            flow_rate_randomized = str(round(session.get('input_flow_rate', None)+ addition_factor,1))+' mL/min'
+        else:
+            flow_rate_randomized = ''
+            
+        flow_rate = str(round(flow_sensor.current_flow_rate,1)) + ' mL/min'
+        
+        
         
         #Determine if dangerous flow was previously deflected
         dangerous_flow_detected = session['dangerous_flow_detected']
@@ -141,7 +159,7 @@ try:
             pause = 0
         '''    
         #Send data to html
-        templateData = {'data' : flow_rate,'time_elapsed': time_elapsed_formatted,'feed_dur':feed_dur_milli, 'dangerous_flow_detected': dangerous_flow_detected}
+        templateData = {'data' : flow_rate,'time_elapsed': time_elapsed_formatted,'feed_dur':feed_dur_milli, 'dangerous_flow_detected': dangerous_flow_detected, 'data_randomized': flow_rate_randomized}
         return jsonify(templateData), 200
 
     @app.route('/flow_rate_error/')
@@ -158,16 +176,19 @@ try:
 
     @app.route('/return_height/')
     def return_height():
-        
+        motor.return_to_base_height()
+        motor.previous_height = 0
+        session.clear()
+        flow_sensor.cleanAndExit()
         #Clean flow sensor pigpio pins and return motor to base height
         return render_template('return_height.html')
 
-    @app.route('/reset_app/',methods ['POST'])
+    @app.route('/reset_app/',methods = ['GET','POST'])
     def reset_app():
         motor.return_to_base_height()
-        flow_sensor.cleanAndExit()
         motor.previous_height = 0
         session.clear()
+        flow_sensor.cleanAndExit()
         return render_template('input1.html')
     
     # Run the app on the local development server

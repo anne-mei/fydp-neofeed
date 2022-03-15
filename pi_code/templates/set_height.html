@@ -57,7 +57,7 @@
       font-size: 35px;
       padding-right: 50px;
       padding-left: 50px;
-      padding-bottom: 35px;
+      padding-bottom: 0px;
       text-align: center;
     }
 
@@ -68,7 +68,7 @@
 
     h2 {
       font-size: 36px;
-      padding: 15px;
+      padding: 10px;
     }
 
     input[type=submit] {
@@ -81,6 +81,7 @@
       font-size: 16px;
       border-radius: 8px;
       font-size: 35px;
+      font-family: 'Nunito';
     }
 
     input[type=reset] {
@@ -93,6 +94,7 @@
       font-size: 16px;
       border-radius: 8px;
       font-size: 35px;
+      font-family: 'Nunito';
     }
 
    form{
@@ -111,12 +113,12 @@
     animation: spin 2s linear infinite;
     position: absolute;
     left: 45%;
-  }
+    }
 
-  @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-  }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
 
   </style>
 
@@ -126,11 +128,8 @@
         <h2 style="font-family: 'Nunito';" class="center" >Setting Height!</h2>
         <div class="content">
         <p>Please wait as the syringe height is initialized...</p>
-          
         <div class="loader"></div>
-
         </div>
-
     </div>
     </div>
 

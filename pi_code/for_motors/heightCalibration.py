@@ -66,9 +66,9 @@ class HeightCalibration:
         height = self.get_height(velocity,headloss_friction)
 
         if self.is_30_mL:
-            height_syringe = 0.107
-            height_motor = height-self.height_diff_babyandbox-height_syringe
+            height_syringe = 0.12
+            height_motor = height-self.height_diff_babyandbox+height_syringe
         else:
             height_syringe = 0.13
-            height_motor = height-self.height_diff_babyandbox-height_syringe
+            height_motor = height-self.height_diff_babyandbox+height_syringe
         return height_motor

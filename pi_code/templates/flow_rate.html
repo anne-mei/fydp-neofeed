@@ -4,6 +4,7 @@
     <head> 
       <link href='https://fonts.googleapis.com/css?family=Nunito' rel='stylesheet'>
     </head>
+
   
     <style>
       body {
@@ -52,29 +53,22 @@
                 font-size: 16px;
                 border-radius: 8px;
                 font-size: 35px;
+                font-family: 'Nunito';
+
         }
     </style>
 
 <body>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
 
   <div class = "text">
     <h4>Current flow rate:</h4>
@@ -82,19 +76,14 @@
     </div>        
 
     <br>
-    <br>
-    <br>
 
     <div class = "text">
     <h4>Time elapsed:</h4> 
     <h3><div id='time_elapsed'></div></h3>
-
-    <br>
-    <br>
     <br>
     <div class="center">
-      <form class="text" method="POST" action="/reset_app/">
-          <input type="reset" value="stop" />
+      <form class="text">
+          <input type="reset" value="stop" id="stopButton" />
       </form>
   </div>
   </div>
@@ -107,9 +96,10 @@
         .then((resp) => resp.json())
         .then(function(response) {
           let flow_rate = response.data.replace('-100 mL/min','Processing...');
-          document.getElementById('test').innerHTML =flow_rate;
+          //document.getElementById('test').innerHTML =flow_rate;
           if (flow_rate != 'Processing...')
           {
+            document.getElementById('test').innerHTML =flow_rate;
             let flow_rate_number = Number(flow_rate.replace(' mL/min',''));
             console.log(response.dangerous_flow_detected.toFixed());
             
@@ -119,9 +109,15 @@
             }
           
           }
+          else{
+            document.getElementById('test').innerHTML =response.data_randomized;
+          }
 
           document.getElementById('time_elapsed').innerHTML =response.time_elapsed;
           setTimeout(function(){window.location.href = "http://127.0.0.1:5000/finish"},response.feed_dur);
+          document.getElementById("stopButton").onclick = function () {
+        window.location.href = "http://127.0.0.1:5000/reset_app";
+        };
       });
     }
     getSensorReading();

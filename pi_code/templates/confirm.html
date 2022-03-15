@@ -22,6 +22,7 @@
                 font-size: 16px;
                 border-radius: 8px;
                 font-size: 35px;
+                font-family: 'Nunito';
             }
 
         input[type=reset] {
@@ -34,6 +35,7 @@
                 font-size: 16px;
                 border-radius: 8px;
                 font-size: 35px;
+                font-family: 'Nunito';
         }
 
         .text {
@@ -79,15 +81,6 @@
         <br>
         <br>
         <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
 
         <div class = "text">
         <h4>Your flow rate will be:</h4>
@@ -100,9 +93,15 @@
         </div>
 
         <div class="center">
-        <form class="text" method="POST" action="/input2/">
-	        <input type="reset" value="go back" />
+        <form class="text">
+	        <input type="reset" value="go back" id="returnButton" />
         </form>
+
+        <script>
+            document.getElementById("returnButton").onclick = function () {
+            window.location.href = "http://127.0.0.1:5000/input2_back";
+        };
+        </script>
 
         <form class="text" method="POST" action="/set_height/">
             <input type="submit" value="confirm" />
