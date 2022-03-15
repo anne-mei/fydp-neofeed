@@ -105,10 +105,15 @@
 
         <div class="center">
           <br>
-          <form method="POST" action="/input2/">
-            <input type="reset" value="reset" />
+          <form>
+            <input type="reset" value="reset" id = "resetButton" />
           </form>
 
+          <script>
+              document.getElementById("resetButton").onclick = function () {
+              window.location.href = "http://127.0.0.1:5000/input2_back";
+          };
+          </script>
           <form method = "POST" action="/initialize_height/">
           <input type="submit" value="resume" />
           </form>

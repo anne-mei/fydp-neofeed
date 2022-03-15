@@ -34,38 +34,40 @@ try:
         
         return render_template('input1.html')
 
-    @app.route('/input2/', methods=['POST'])
+    @app.route('/input2/', methods=['GET','POST'])
     def input2():
         
         #Get variables from form
         weight = float(request.form['infant_weight']) #weight in kg
-        feed_session= float(request.form['feed_session'])
+        feed_session = float(request.form['feed_session'])
         feed_day = float(request.form['feed_day'])
         
         #Calculate feed vol
-        feed_vol = get_feed_volume(weight, feed_session, feed_day) # Feed vol in mL
-        return render_template('input2.html',feed_vol = feed_vol)
+        session['feed_vol'] = get_feed_volume(weight, feed_session, feed_day) # Feed vol in mL
+        return render_template('input2.html',feed_vol = session['feed_vol'], feed_dur = 0, height_diff_babyandbox = 0)
 
+    @app.route('/input2_back/', methods=['GET','POST'])
+    def input_back():
+        return render_template('input2.html',feed_vol = session['feed_vol'],feed_dur  = session['feed_dur'],height_diff_babyandbox = session['height_diff_babyandbox'])
 
     @app.route('/confirm/', methods=['POST'])
     def confirm():
         
         #Get variables from form
-        feed_dur = float(request.form['feed_dur']) #Feed duration in min
-        syringe_vol = str(request.form['syringe_vol']) # Either 30mL or 50mL
-        feed_vol = float(request.form['feed_vol']) #Feed vol in mL
+        session['feed_dur'] = float(request.form['feed_dur']) #Feed duration in min
+        session['syringe_vol'] = str(request.form['syringe_vol']) # Either 30mL or 50mL
+        session['feed_vol'] = float(request.form['feed_vol']) #Feed vol in mL
         #Calculate flow rate
-        input_flow_rate = feed_vol/feed_dur #flow rate in mL/min
+        input_flow_rate = session['feed_vol']/session['feed_dur'] #flow rate in mL/min
         baby_pressure = 0 #Feed pressure in Pa (irl would be 8mmHg)
 
         #Store variables in session
-        session['feed_dur'] = feed_dur
         session['input_flow_rate'] = input_flow_rate
         session['baby_pressure'] = baby_pressure
         session['height_diff_babyandbox'] = float(request.form['height_diff_babyandbox']) #Height diff between baby and box in cm
         session['plunged'] = 0
         
-        if syringe_vol == '30 mL':
+        if session['syringe_vol'] == '30 mL':
             session['is_30_mL'] = True
         else:
             session['is_30_mL'] = False
@@ -73,7 +75,7 @@ try:
         #reset time elapsed
         session['time_elapsed'] = 0
         
-        return render_template('confirm.html',flow_rate = input_flow_rate,feed_dur = feed_dur)
+        return render_template('confirm.html',flow_rate = input_flow_rate,feed_dur = session['feed_dur'])
 
 
     @app.route('/set_height/',methods = ['POST'])
