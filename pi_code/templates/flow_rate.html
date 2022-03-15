@@ -96,9 +96,10 @@
         .then((resp) => resp.json())
         .then(function(response) {
           let flow_rate = response.data.replace('-100 mL/min','Processing...');
-          document.getElementById('test').innerHTML =flow_rate;
+          //document.getElementById('test').innerHTML =flow_rate;
           if (flow_rate != 'Processing...')
           {
+            document.getElementById('test').innerHTML =flow_rate;
             let flow_rate_number = Number(flow_rate.replace(' mL/min',''));
             console.log(response.dangerous_flow_detected.toFixed());
             
@@ -107,6 +108,9 @@
                 window.location.href = "http://127.0.0.1:5000/flow_rate_error";
             }
           
+          }
+          else{
+            document.getElementById('test').innerHTML =response.data_randomized;
           }
 
           document.getElementById('time_elapsed').innerHTML =response.time_elapsed;

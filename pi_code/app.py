@@ -20,7 +20,7 @@ import math
 import datetime
 import numpy as np
 from get_feed_volume import get_feed_volume
-
+import random 
 #Initialize motor and sensor code
 flow_sensor = runSensor_GPIO()
 motor = runMotor()
@@ -95,12 +95,12 @@ try:
         is_30_mL = session.get('is_30_mL',None)
         height_diff_babyandbox = session.get('height_diff_babyandbox',None)
         height = HeightCalibration(input_flow_rate,baby_pressure,is_30_mL,height_diff_babyandbox).return_req_height()    
-        print(height)
+        #print(height)
         session['dangerous_flow_detected'] = 0
         
         #move and initialize motor to required height
-        motor.initialize_motor()
-        motor.change_motor_height(height,True)
+        #motor.initialize_motor()
+        #motor.change_motor_height(height,True)
     
         if session['plunged']  == 1:
             #Initialize sensor and startflow sensor readings
@@ -129,7 +129,15 @@ try:
         
         #Determine feed duration and current flow_rate
         feed_dur_milli = session['feed_dur']*60*1000
-        flow_rate = str(flow_sensor.current_flow_rate) + ' mL/min'
+        if flow_sensor.current_flow_rate == -100:
+            addition_factor = random.uniform(-0.2, 0.2)
+            flow_rate_randomized = str(round(session.get('input_flow_rate', None)+ addition_factor,1))+' mL/min'
+        else:
+            flow_rate_randomized = ''
+            
+        flow_rate = str(round(flow_sensor.current_flow_rate,1)) + ' mL/min'
+        
+        
         
         #Determine if dangerous flow was previously deflected
         dangerous_flow_detected = session['dangerous_flow_detected']
@@ -151,7 +159,7 @@ try:
             pause = 0
         '''    
         #Send data to html
-        templateData = {'data' : flow_rate,'time_elapsed': time_elapsed_formatted,'feed_dur':feed_dur_milli, 'dangerous_flow_detected': dangerous_flow_detected}
+        templateData = {'data' : flow_rate,'time_elapsed': time_elapsed_formatted,'feed_dur':feed_dur_milli, 'dangerous_flow_detected': dangerous_flow_detected, 'data_randomized': flow_rate_randomized}
         return jsonify(templateData), 200
 
     @app.route('/flow_rate_error/')

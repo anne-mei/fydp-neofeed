@@ -91,5 +91,5 @@ class runMotor():
 '''
 motor = runMotor()
 motor.initialize_motor()
-motor.change_motor_height(0.05,False)
+motor.change_motor_height(0.04,True)
 '''
