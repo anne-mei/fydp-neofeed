@@ -5,12 +5,6 @@
       <link href='https://fonts.googleapis.com/css?family=Nunito' rel='stylesheet'>
     </head>
 
-    <script>
-      document.getElementById("stopButton").onclick = function () {
-      location.href = "http://127.0.0.1:5000/reset_app";
-    };
-
-    </script>
   
     <style>
       body {
@@ -129,6 +123,9 @@
 
           document.getElementById('time_elapsed').innerHTML =response.time_elapsed;
           setTimeout(function(){window.location.href = "http://127.0.0.1:5000/finish"},response.feed_dur);
+          document.getElementById("stopButton").onclick = function () {
+        window.location.href = "http://127.0.0.1:5000/reset_app";
+        };
       });
     }
     getSensorReading();

@@ -38,12 +38,12 @@ class runSensor_GPIO:
         self.stop = True
         self.thread.join()
         #Cleanup GPIO
-        print("Cleaning...")
+        #print("Cleaning...")
 
-        if not EMULATE_HX711:
-            GPIO.cleanup()
+        #if not EMULATE_HX711:
+            #GPIO.cleanup()
             
-        print("Bye!")
+        #print("Bye!")
         
     def save_data(self):
         #save_data
@@ -91,6 +91,9 @@ class runSensor_GPIO:
             if self.stop:
                 break
     def start_thread(self):
+        self.flow_rates =[]
+        self.thread = 0
+        self.stop = False
         self.thread = threading.Thread(target=self.return_flow_rate)
         self.thread.start()
 

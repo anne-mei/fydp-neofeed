@@ -54,7 +54,6 @@ try:
         feed_dur = float(request.form['feed_dur']) #Feed duration in min
         syringe_vol = str(request.form['syringe_vol']) # Either 30mL or 50mL
         feed_vol = float(request.form['feed_vol']) #Feed vol in mL
-
         #Calculate flow rate
         input_flow_rate = feed_vol/feed_dur #flow rate in mL/min
         baby_pressure = 0 #Feed pressure in Pa (irl would be 8mmHg)
@@ -64,11 +63,15 @@ try:
         session['input_flow_rate'] = input_flow_rate
         session['baby_pressure'] = baby_pressure
         session['height_diff_babyandbox'] = float(request.form['height_diff_babyandbox']) #Height diff between baby and box in cm
+        session['plunged'] = 0
         
         if syringe_vol == '30 mL':
             session['is_30_mL'] = True
         else:
             session['is_30_mL'] = False
+        
+        #reset time elapsed
+        session['time_elapsed'] = 0
         
         return render_template('confirm.html',flow_rate = input_flow_rate,feed_dur = feed_dur)
 
@@ -89,25 +92,30 @@ try:
         baby_pressure = session.get('baby_pressure',None)
         is_30_mL = session.get('is_30_mL',None)
         height_diff_babyandbox = session.get('height_diff_babyandbox',None)
-        height = HeightCalibration(input_flow_rate,baby_pressure,is_30_mL,height_diff_babyandbox).return_req_height()
-        
-        #Initialize sensor and startflow sensor readings
-        flow_sensor.initialize_sensor()
-        flow_sensor.start_thread()
+        height = HeightCalibration(input_flow_rate,baby_pressure,is_30_mL,height_diff_babyandbox).return_req_height()    
+
         session['dangerous_flow_detected'] = 0
         
         #move and initialize motor to required height
         motor.initialize_motor()
         motor.change_motor_height(height,True)
-        
-        #reset time elapsed
-        session['time_elapsed'] = 0
-
-        return render_template('plunge.html')
+    
+        if session['plunged']  == 1:
+            #Initialize sensor and startflow sensor readings
+            flow_sensor.initialize_sensor()
+            flow_sensor.start_thread()
+            return render_template('flow_rate.html')
+        else:
+            return render_template('plunge.html')
         
 
     @app.route('/flow_rate_setter/',methods = ['POST'])
     def flow_rate_setter():
+        session['plunged'] = 1
+        
+        #Initialize sensor and startflow sensor readings
+        flow_sensor.initialize_sensor()
+        flow_sensor.start_thread()
         return render_template('flow_rate.html')
 
     @app.route('/flow_rate/')
@@ -165,7 +173,7 @@ try:
         #Clean flow sensor pigpio pins and return motor to base height
         return render_template('return_height.html')
 
-    @app.route('/reset_app/',methods = ['POST'])
+    @app.route('/reset_app/',methods = ['GET','POST'])
     def reset_app():
         motor.return_to_base_height()
         motor.previous_height = 0
