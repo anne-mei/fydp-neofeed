@@ -311,7 +311,7 @@ if __name__ == "__main__":
             
             #Find avg median
             count, mode, reading = s.get_reading()
-            reading =reading/239*-1
+            reading =reading
             if count != c:
                 c = count
                 weight = reading

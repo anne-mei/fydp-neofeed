@@ -182,8 +182,8 @@ try:
 
     @app.route('/return_height/')
     def return_height():
-        motor.return_to_base_height()
-        
+        #motor.return_to_base_height()
+        motor.change_motor_height(session['height'],False)
         motor.previous_height = 0
         session.clear()
         flow_sensor.cleanAndExit()
@@ -192,7 +192,8 @@ try:
 
     @app.route('/reset_app/',methods = ['GET','POST'])
     def reset_app():
-        motor.return_to_base_height()
+        motor.change_motor_height(session['height'],False)
+        #motor.return_to_base_height()
         session.clear()
         flow_sensor.cleanAndExit()
         motor.previous_height = 0

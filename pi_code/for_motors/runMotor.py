@@ -88,8 +88,8 @@ class runMotor():
         GPIO.output( 18, False )
         GPIO.output( 22, False )
         return height
-'''
+
 motor = runMotor()
 motor.initialize_motor()
-motor.change_motor_height(0.03,False)
-'''
+motor.change_motor_height(0.16,True)
+
