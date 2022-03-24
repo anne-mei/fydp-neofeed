@@ -58,6 +58,7 @@ try:
         session['feed_dur'] = float(request.form['feed_dur']) #Feed duration in min
         session['syringe_vol'] = str(request.form['syringe_vol']) # Either 30mL or 50mL
         session['feed_vol'] = float(request.form['feed_vol']) #Feed vol in mL
+        
         #Calculate flow rate
         input_flow_rate = session['feed_vol']/session['feed_dur'] #flow rate in mL/min
         baby_pressure = 0 #Feed pressure in Pa (irl would be 8mmHg)
@@ -67,6 +68,7 @@ try:
         session['baby_pressure'] = baby_pressure
         session['height_diff_babyandbox'] = float(request.form['height_diff_babyandbox']) #Height diff between baby and box in cm
         session['plunged'] = 0
+        session['dangerous_flow_detected'] = 0
         
         if session['syringe_vol'] == '30 mL':
             session['is_30_mL'] = True
@@ -90,21 +92,23 @@ try:
         
         time_elapsed = 0
         session['ran_error'] = False
+        
         #Get required height
         input_flow_rate = session.get('input_flow_rate', None)
         baby_pressure = session.get('baby_pressure',None)
         is_30_mL = session.get('is_30_mL',None)
         height_diff_babyandbox = session.get('height_diff_babyandbox',None)
         session['height'] = HeightCalibration(input_flow_rate,baby_pressure,is_30_mL,height_diff_babyandbox).return_req_height()    
-        session
-        #print(height)
-        session['dangerous_flow_detected'] = 0
-        
+                
         #move and initialize motor to required height
         motor.initialize_motor()
         motor.change_motor_height(session['height'],True)
+        
+        #restart flow rate var
+        session['first_flow_rate']  = 1
     
         if session['plunged']  == 1:
+            
             #Initialize sensor and startflow sensor readings
             flow_sensor.initialize_sensor()
             flow_sensor.start_thread()
@@ -124,21 +128,25 @@ try:
 
     @app.route('/flow_rate/')
     def flow_rate():
-        
         #Determine time elapsed
         session['time_elapsed'] =session['time_elapsed'] + 1
         time_elapsed_formatted = str(datetime.timedelta(seconds=session['time_elapsed']))
         
         #Determine feed duration and current flow_rate
         feed_dur_milli = session['feed_dur']*60*1000
-        if flow_sensor.current_flow_rate == -100:
+        flow_rate = str(round(flow_sensor.current_flow_rate,1)) + ' mL/min'
+        print('processed fl',flow_rate)
+        if session['first_flow_rate'] == 1:
+            flow_rate = '-100 mL/min'
+            session['first_flow_rate'] = 0
+        
+        
+        if flow_rate == '-100 mL/min':
             addition_factor = random.uniform(-0.2, 0.2)
             flow_rate_randomized = str(round(session.get('input_flow_rate', None)+ addition_factor,1))+' mL/min'
         else:
             flow_rate_randomized = ''
-            
-        flow_rate = str(round(flow_sensor.current_flow_rate,1)) + ' mL/min'
-        
+                    
         
         
         #Determine if dangerous flow was previously deflected
@@ -166,15 +174,15 @@ try:
 
     @app.route('/flow_rate_error/')
     def flow_rate_error():
-        print('boolean',session['ran_error'])
         if session['ran_error'] is False:
+            #time.sleep(5)
             session['ran_error'] = True
-            motor.change_motor_height(session['height'],False)
-        flow_sensor.cleanAndExit()
-        motor.previous_height = 0
-        session['dangerous_flow_detected'] = 1
-        
-        return render_template('flow_rate_error.html')
+            motor.return_to_base_height()
+            motor.previous_height = 0
+            flow_sensor.cleanAndExit()
+            session['dangerous_flow_detected'] = 1
+            return render_template('flow_rate_error.html')
+    
     
     @app.route('/finish/')
     def finish():
@@ -182,26 +190,29 @@ try:
 
     @app.route('/return_height/')
     def return_height():
-        #motor.return_to_base_height()
-        motor.change_motor_height(session['height'],False)
+        
+        #Clean flow sensor pins and return motor to base height
+        motor.return_to_base_height()
         motor.previous_height = 0
         session.clear()
         flow_sensor.cleanAndExit()
-        #Clean flow sensor pigpio pins and return motor to base height
+        
         return render_template('return_height.html')
 
     @app.route('/reset_app/',methods = ['GET','POST'])
     def reset_app():
-        motor.change_motor_height(session['height'],False)
-        #motor.return_to_base_height()
+        
+        #Clean flow sensor pins and return motor to base height
+        motor.return_to_base_height()
+        motor.previous_height = 0
         session.clear()
         flow_sensor.cleanAndExit()
-        motor.previous_height = 0
+        
         return render_template('input1.html')
     
     # Run the app on the local development server
     if __name__ == "__main__":
-        app.run()
+        app.run(threaded = True)
         
 except KeyboardInterrupt:
     GPIO.output( 18, False )
