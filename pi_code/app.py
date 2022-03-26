@@ -81,7 +81,7 @@ try:
             #Calculate feed vol
             session['feed_vol'] = get_feed_volume(weight, feed_session, feed_day) # Feed vol in mL
             print(session['feed_vol'])
-            return render_template('input2.html',feed_vol = session['feed_vol'], feed_dur = 0, height_diff_babyandbox = 0)
+            return render_template('input2.html',feed_vol = session['feed_vol'], feed_dur = 1, height_diff_babyandbox = 0)
 
     @app.route('/input2_back/', methods=['GET','POST'])
     def input_back():
@@ -96,25 +96,47 @@ try:
         session['feed_vol'] = float(request.form['feed_vol']) #Feed vol in mL
         
         #Calculate flow rate
-        input_flow_rate = session['feed_vol']/session['feed_dur'] #flow rate in mL/min
+        input_flow_rate = round(session['feed_vol']/session['feed_dur'],2) #flow rate in mL/min
         baby_pressure = 0 #Feed pressure in Pa (irl would be 8mmHg)
+        session['height_diff_babyandbox']= float(request.form['height_diff_babyandbox']) #Height diff between baby and box in cm
 
         #Store variables in session
-        session['input_flow_rate'] = input_flow_rate
-        session['baby_pressure'] = baby_pressure
-        session['height_diff_babyandbox'] = float(request.form['height_diff_babyandbox']) #Height diff between baby and box in cm
+        #session['input_flow_rate'] = input_flow_rate
+        #session['baby_pressure'] = baby_pressure
+        #session['height_diff_babyandbox'] = float(request.form['height_diff_babyandbox']) #Height diff between baby and box in cm
         session['plunged'] = 0
         session['dangerous_flow_detected'] = 0
         
+        
+            
         if session['syringe_vol'] == '30 mL':
-            session['is_30_mL'] = True
+            is_30_mL = True
         else:
-            session['is_30_mL'] = False
+            is_30_mL = False
         
-        #reset time elapsed
-        session['time_elapsed'] = 0
+        #Check for errors on page
+        input_flow_rate_error = ''
+        height_diff_babyandbox_error = ''
+        input_2_error = False
         
-        return render_template('confirm.html',flow_rate = input_flow_rate,feed_dur = session['feed_dur'])
+        if input_flow_rate>2 or input_flow_rate<0:
+            input_2_error = True
+            input_flow_rate_error = 'Please ensure flow rate is below 2mL/min'
+            return render_template('errors_input2.html',input2_error_msg = input_flow_rate_error)
+        
+        session['height'] = HeightCalibration(input_flow_rate,baby_pressure,is_30_mL,session['height_diff_babyandbox']).return_req_height()
+        
+        if session['height']<0:
+            input_2_error = True
+            change_height_required = round(session['height_diff_babyandbox']+session['height']*(100))
+            height_diff_babyandbox_error = 'Please adjust so the height between the baby and device is at most '+str(change_height_required) + ' cm'
+            return render_template('errors_input2.html',input2_error_msg = height_diff_babyandbox_error)
+        
+        
+        if input_2_error is False:
+            #reset time elapsed
+            session['time_elapsed'] = 0
+            return render_template('confirm.html',flow_rate = input_flow_rate,feed_dur = session['feed_dur'])
 
 
     @app.route('/set_height/',methods = ['POST'])
@@ -130,11 +152,11 @@ try:
         session['ran_error'] = False
         
         #Get required height
-        input_flow_rate = session.get('input_flow_rate', None)
-        baby_pressure = session.get('baby_pressure',None)
-        is_30_mL = session.get('is_30_mL',None)
-        height_diff_babyandbox = session.get('height_diff_babyandbox',None)
-        session['height'] = HeightCalibration(input_flow_rate,baby_pressure,is_30_mL,height_diff_babyandbox).return_req_height()    
+        #input_flow_rate = session.get('input_flow_rate', None)
+        #baby_pressure = session.get('baby_pressure',None)
+        #is_30_mL = session.get('is_30_mL',None)
+        #height_diff_babyandbox = session.get('height_diff_babyandbox',None)
+        #session['height'] = HeightCalibration(input_flow_rate,baby_pressure,is_30_mL,height_diff_babyandbox).return_req_height()    
                 
         #move and initialize motor to required height
         motor.initialize_motor()
