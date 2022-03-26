@@ -48,9 +48,19 @@
     p {
       font-family: 'Nunito';
       font-size: 35px;
+      padding-top: 10px;
       padding-right: 50px;
       padding-left: 50px;
-      padding-bottom: 35px;
+      padding-bottom: 0px;
+      text-align: center;
+    }
+
+    h3 {
+      font-family: 'Nunito';
+      font-size: 24px;
+      padding-right: 50px;
+      padding-left: 50px;
+      padding-bottom: 10px;
       text-align: center;
     }
 
@@ -62,24 +72,11 @@
     h2 {
       font-size: 36px;
       padding: 15px;
-    }
-
-    input[type=submit] {
-      background-color: #4CAF50; 
-      border: none;
-      color: white;
-      padding: 15px 32px;
-      text-align: center;
-      display: inline-block;
-      font-size: 16px;
-      border-radius: 8px;
-      font-size: 35px;
-      font-family: 'Nunito';
-
+      padding-bottom: 5px;
     }
 
     input[type=reset] {
-      background-color: #c03131; 
+      background-color: #4CAF50; 
       border: none;
       color: white;
       padding: 15px 32px;
@@ -104,23 +101,22 @@
       <div class="modal">
         <h2 style="font-family: 'Nunito';" class="center">Invalid Inputs Detected!</h2>
         <div class="content">
-        <p>Please verify that the feed session number is correct</p>
+        <p>Please double-check the following</p>
+        <h3>Infant weight</h3>
+
         </div>
 
         <div class="center">
           <br>
           <form>
-            <input type="reset" value="reset" id = "resetButton" />
+            <input type="reset" value="ok" id = "resetButton" />
           </form>
 
           <script>
               document.getElementById("resetButton").onclick = function () {
-              window.location.href = "http://127.0.0.1:5000/input2_back";
+              window.location.href = "http://127.0.0.1:5000/input1";
           };
           </script>
-          <form method = "POST" action="/initialize_height/">
-          <input type="submit" value="resume" />
-          </form>
         </div>
 
     </div>
