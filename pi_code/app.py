@@ -42,10 +42,46 @@ try:
         feed_session = float(request.form['feed_session'])
         feed_day = float(request.form['feed_day'])
         
-        #Calculate feed vol
-        session['feed_vol'] = get_feed_volume(weight, feed_session, feed_day) # Feed vol in mL
-        print(session['feed_vol'])
-        return render_template('input2.html',feed_vol = session['feed_vol'], feed_dur = 0, height_diff_babyandbox = 0)
+        
+        
+        #instantiate weight_errors
+        weight_error = ''
+        feed_session_error = ''
+        feed_day_error = ''
+        
+        input1_error = False
+        max_feed_session = 0
+        max_feed_day = 0
+        
+        #Check if input is correct
+        
+        if weight>=0.4 and weight<0.6:
+            max_feed_session = 12
+            max_feed_day = 7
+        elif weight>=0.6 and weight<1.25:
+            max_feed_session = 12
+            max_feed_day = 6
+        elif weight>=1.25 and weight<=2.25:
+            max_feed_session = 8
+            max_feed_day = 5
+        else:
+            weight_error = ' Please enter a weight between 0.4kg and 2.25kg'
+            input1_error = True
+        
+        if feed_session>max_feed_session or feed_session<1:
+            feed_session_error = 'Please enter a feed session number between 1 and ' + str(max_feed_session)
+            input1_error = True
+        if feed_day>max_feed_day or feed_day<1:
+            feed_day_error = 'Please enter a feed day number between 1 and ' + str(max_feed_day)
+            input1_error = True
+        
+        if input1_error:
+            return render_template('errors_input1.html',weight_error = weight_error, feed_session_error = feed_session_error, feed_day_error = feed_day_error)
+        else:
+            #Calculate feed vol
+            session['feed_vol'] = get_feed_volume(weight, feed_session, feed_day) # Feed vol in mL
+            print(session['feed_vol'])
+            return render_template('input2.html',feed_vol = session['feed_vol'], feed_dur = 0, height_diff_babyandbox = 0)
 
     @app.route('/input2_back/', methods=['GET','POST'])
     def input_back():

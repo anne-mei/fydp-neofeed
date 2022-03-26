@@ -102,8 +102,9 @@
         <h2 style="font-family: 'Nunito';" class="center">Invalid Inputs Detected!</h2>
         <div class="content">
         <p>Please double-check the following</p>
-        <h3>Infant weight</h3>
-
+        <h3>{{weight_error}}</h3>
+        <h3>{{feed_session_error}}</h3>
+        <h3>{{feed_day_error}}</h3>
         </div>
 
         <div class="center">
@@ -114,7 +115,7 @@
 
           <script>
               document.getElementById("resetButton").onclick = function () {
-              window.location.href = "http://127.0.0.1:5000/input1";
+              window.location.href = "http://127.0.0.1:5000/";
           };
           </script>
         </div>
