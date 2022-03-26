@@ -4,6 +4,7 @@
 # Import required libraries
 import pandas
 import sys
+from pygame import mixer
 sys.path.insert(0, '/home/pi/repos/fydp-neofeed/pi_code/for_motors/')
 sys.path.insert(0, '/home/pi/repos/fydp-neofeed/pi_code/for_sensors/')
 sys.path.insert(0, '/home/pi/repos/fydp-neofeed/pi_code/utilities/')
@@ -26,6 +27,10 @@ flow_sensor = runSensor_GPIO()
 motor = runMotor()
 pause = 0
 
+#Initialize music
+mixer.init()
+mixer.music.load('/home/pi/repos/fydp-neofeed/pi_code/nurse_alarm.mp3')
+
 app = Flask(__name__)
 app.secret_key = 'uwuwuwuwuwuwuwuwuwuuuuuu99999@'
 try:
@@ -36,6 +41,7 @@ try:
 
     @app.route('/input2/', methods=['GET','POST'])
     def input2():
+
         
         #Get variables from form
         weight = float(request.form['infant_weight']) #weight in kg
@@ -84,12 +90,12 @@ try:
             return render_template('input2.html',feed_vol = session['feed_vol'], feed_dur = 1, height_diff_babyandbox = 0)
 
     @app.route('/input2_back/', methods=['GET','POST'])
-    def input_back():
+    def input2_back():
+        mixer.music.stop()
         return render_template('input2.html',feed_vol = session['feed_vol'],feed_dur  = session['feed_dur'],height_diff_babyandbox = session['height_diff_babyandbox'])
 
     @app.route('/confirm/', methods=['POST'])
     def confirm():
-        
         #Get variables from form
         session['feed_dur'] = float(request.form['feed_dur']) #Feed duration in min
         session['syringe_vol'] = str(request.form['syringe_vol']) # Either 30mL or 50mL
@@ -157,7 +163,10 @@ try:
         #is_30_mL = session.get('is_30_mL',None)
         #height_diff_babyandbox = session.get('height_diff_babyandbox',None)
         #session['height'] = HeightCalibration(input_flow_rate,baby_pressure,is_30_mL,height_diff_babyandbox).return_req_height()    
-                
+        
+        #stop music if playing
+        mixer.music.stop()
+        
         #move and initialize motor to required height
         motor.initialize_motor()
         motor.change_motor_height(session['height'],True)
@@ -204,7 +213,7 @@ try:
             flow_rate_randomized = str(round(session.get('input_flow_rate', None)+ addition_factor,1))+' mL/min'
         else:
             flow_rate_randomized = ''
-                    
+        
         
         
         #Determine if dangerous flow was previously deflected
@@ -233,6 +242,7 @@ try:
     @app.route('/flow_rate_error/')
     def flow_rate_error():
         if session['ran_error'] is False:
+            mixer.music.play(-1)
             #time.sleep(5)
             session['ran_error'] = True
             motor.return_to_base_height()
