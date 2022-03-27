@@ -26,7 +26,7 @@ class runSensor_GPIO:
         self.stop = False
     def initialize_sensor(self):
         referenceUnit = -2390
-        self.hx = HX711(5, 6)
+        self.hx = HX711(4, 27)
         #green - 5; white - 6
         #Set reference unit and tare scale
         self.hx.set_reading_format("MSB", "MSB")
