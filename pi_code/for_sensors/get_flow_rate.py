@@ -4,7 +4,7 @@ import math
 
 WINDOW_WIDTH_RAW = 5
 WINDOW_WIDTH_FLOWRATE = 30
-DATAPNT_DELAY = 90  # 899 #100 
+DATAPNT_DELAY = 899#90  899 #100 
 FPS = 1000 / DATAPNT_DELAY
 
 # def butter_filter(data, cutoff, order, fs):

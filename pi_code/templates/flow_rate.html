@@ -95,9 +95,10 @@
       fetch(`http://${location.host}/flow_rate`)  // send request to route /update
         .then((resp) => resp.json())
         .then(function(response) {
+          
           let flow_rate = response.data.replace('-100 mL/min','Processing...');
           //document.getElementById('test').innerHTML =flow_rate;
-          if (flow_rate != 'Processing...')
+          if (flow_rate != 'Processing...' && flow_rate !='Height Changing')
           {
             document.getElementById('test').innerHTML =flow_rate;
             let flow_rate_number = Number(flow_rate.replace(' mL/min',''));
@@ -111,7 +112,15 @@
           
           }
           else{
-            document.getElementById('test').innerHTML =response.data_randomized;
+            if (flow_rate == 'Height Changing')
+            {
+              document.getElementById('test').innerHTML = flow_rate;
+            }
+            else
+            {
+              document.getElementById('test').innerHTML =response.data_randomized;
+            }
+          
           }
 
           document.getElementById('time_elapsed').innerHTML =response.time_elapsed;

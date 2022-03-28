@@ -20,13 +20,14 @@ class runSensor_GPIO:
     def __init__(self):
         self.rn = RunningMedian(50)
         self.flow_rates = []
+        self.flow_rates_converted = []
         self.filter_window = FilterWindow(WINDOW_WIDTH_RAW,FPS)
         self.total_avg_weights = []
         self.current_flow_rate = 0
         self.stop = False
     def initialize_sensor(self):
         referenceUnit = -2390
-        self.hx = HX711(5, 6)
+        self.hx = HX711(4, 27)
         #green - 5; white - 6
         #Set reference unit and tare scale
         self.hx.set_reading_format("MSB", "MSB")
@@ -63,18 +64,21 @@ class runSensor_GPIO:
                     
     def return_flow_rate(self):
         while True:
-            avg_count = 10
+            avg_count = 0
             total_weight = 0
-            for i in range(avg_count):
-                
-                #Find avg median
+            #Collect 10 dp
+            while avg_count<10:
                 weight = self.hx.get_weight(1)
-                self.rn.add(weight)
+                #Find avg median
+                if -15 < weight < 50:
+                    self.rn.add(weight)
+
                 avg_med_val = self.rn.findAvgMedian(10)
                 total_weight = total_weight+avg_med_val
+                avg_count = avg_count+1
                 
             #Find overall average
-            avg_weight = total_weight/avg_count
+            avg_weight = total_weight/10
             print("current weight",avg_weight)
             #print("current weight",avg_weight)
 
@@ -85,7 +89,7 @@ class runSensor_GPIO:
             #Get flow rate
             self.current_flow_rate, self.flow_rates = get_flow_rate(avg_weights, self.flow_rates)
             print("current flow rate",self.current_flow_rate)
-            
+            self.flow_rates_converted.append(self.current_flow_rate)
             #save_data
             self.total_avg_weights.append(avg_weight)
             if self.stop:

@@ -76,9 +76,25 @@ class runSensor_GPIO:
                 
             #Find overall average
             avg_weight = total_weight/avg_count'''
-            
-            avg_weight = self.hx.get_weight(1)
+            avg_count = 0
+            total_weight = 0
+            #Collect 10 dp
+            while avg_count<10:
+                weight = self.hx.get_weight(1)
+                #Find avg median
+                if -5 < weight < 50:
+                    self.rn.add(weight)
+
+                avg_med_val = self.rn.findAvgMedian(10)
+                total_weight = total_weight+avg_med_val
+                avg_count = avg_count+1
+                
+            #Find overall average
+            avg_weight = total_weight/10
             print("current weight",avg_weight)
+            #print("current weight",avg_weight)
+            #avg_weight = self.hx.get_weight(1)
+            #print("current weight",avg_weight)
 
 
             #Get array of averages

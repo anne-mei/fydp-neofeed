@@ -92,7 +92,7 @@ try:
     @app.route('/input2_back/', methods=['GET','POST'])
     def input2_back():
         mixer.music.stop()
-        return render_template('input2.html',feed_vol = session['feed_vol'],feed_dur  = session['feed_dur'],height_diff_babyandbox = session['height_diff_babyandbox'])
+        return render_template('input2.html',feed_vol = session['feed_vol'],feed_dur  = session['feed_dur'])#,height_diff_babyandbox = session['height_diff_babyandbox'])
 
     @app.route('/confirm/', methods=['POST'])
     def confirm():
@@ -103,13 +103,14 @@ try:
         
         #Calculate flow rate
         input_flow_rate = round(session['feed_vol']/session['feed_dur'],2) #flow rate in mL/min
+        session['input_flow_rate'] = input_flow_rate
         baby_pressure = 0 #Feed pressure in Pa (irl would be 8mmHg)
-        session['height_diff_babyandbox']= float(request.form['height_diff_babyandbox']) #Height diff between baby and box in cm
+        #session['height_diff_babyandbox']= float(request.form['height_diff_babyandbox']) #Height diff between baby and box in cm
 
         #Store variables in session
         #session['input_flow_rate'] = input_flow_rate
         #session['baby_pressure'] = baby_pressure
-        #session['height_diff_babyandbox'] = float(request.form['height_diff_babyandbox']) #Height diff between baby and box in cm
+        session['height_diff_babyandbox'] = float(request.form['height_diff_babyandbox']) #Height diff between baby and box in cm
         session['plunged'] = 0
         session['dangerous_flow_detected'] = 0
         
@@ -122,7 +123,7 @@ try:
         
         #Check for errors on page
         input_flow_rate_error = ''
-        height_diff_babyandbox_error = ''
+        #height_diff_babyandbox_error = ''
         input_2_error = False
         
         if input_flow_rate>2 or input_flow_rate<0:
@@ -131,6 +132,7 @@ try:
             return render_template('errors_input2.html',input2_error_msg = input_flow_rate_error)
         
         session['height'] = HeightCalibration(input_flow_rate,baby_pressure,is_30_mL,session['height_diff_babyandbox']).return_req_height()
+        
         
         if session['height']<0:
             input_2_error = True
@@ -187,7 +189,9 @@ try:
     @app.route('/flow_rate_setter/',methods = ['POST'])
     def flow_rate_setter():
         session['plunged'] = 1
-        
+        session['pause'] = 0
+        session['changing_height'] = False
+        session['time'] = 0
         #Initialize sensor and startflow sensor readings
         flow_sensor.initialize_sensor()
         flow_sensor.start_thread()
@@ -198,7 +202,8 @@ try:
         #Determine time elapsed
         session['time_elapsed'] =session['time_elapsed'] + 1
         time_elapsed_formatted = str(datetime.timedelta(seconds=session['time_elapsed']))
-        
+        changing_height = False
+        time = 0
         #Determine feed duration and current flow_rate
         feed_dur_milli = session['feed_dur']*60*1000
         flow_rate = str(round(flow_sensor.current_flow_rate,1)) + ' mL/min'
@@ -210,7 +215,10 @@ try:
         
         if flow_rate == '-100 mL/min':
             addition_factor = random.uniform(-0.2, 0.2)
-            flow_rate_randomized = str(round(session.get('input_flow_rate', None)+ addition_factor,1))+' mL/min'
+            if session.get('input_flow_rate',None) is None:
+                flow_rate_randomized = str(round(addition_factor,1))+' mL/min'
+            else:
+                flow_rate_randomized = str(round(session.get('input_flow_rate', None)+ addition_factor,1))+' mL/min'
         else:
             flow_rate_randomized = ''
         
@@ -220,23 +228,33 @@ try:
         dangerous_flow_detected = session['dangerous_flow_detected']
         
         #Determine the avg flow rate over 10 flow rates, compare diff from flow rate input from user
-        '''
-        session['pause'] = session['pause'] + 1
-        if len(flow_sensor.flow_rates>60):
-            avg_flow_rate = np.average(math.floor(flow_sensor.flow_rates[:-10]))
-            
-        diff_flow = session['input_flow_rate']-avg_flow_rate
         
-        #Control method, if diff in flow is significant, change height up or down by 1cm
-        if diff_flow >0.3 and pause >=60:
-            motor.change_motor_height(0.01,False)
-            pause = 0
-        elif diff_flow<-0.3 and pause>=60:
-            motor.change_motor_height(0.01,True)
-            pause = 0
-        '''    
-        #Send data to html
-        templateData = {'data' : flow_rate,'time_elapsed': time_elapsed_formatted,'feed_dur':feed_dur_milli, 'dangerous_flow_detected': dangerous_flow_detected, 'data_randomized': flow_rate_randomized}
+        session['pause'] = session['pause'] + 1
+        if len(flow_sensor.flow_rates_converted)>60:
+            print (flow_sensor.flow_rates_converted[-10:-1])
+            avg_flow_rate = round(np.average(flow_sensor.flow_rates_converted[-10:-1]),1)
+            print('avg_flow_rate',avg_flow_rate)
+            print('input_flow_rate',session['input_flow_rate'])
+            diff_flow = session['input_flow_rate']-avg_flow_rate
+            print('diff_flow',diff_flow)
+            #Control method, if diff in flow is significant, change height up or down by 1cm
+            if diff_flow >0.2 and session['pause'] >=90:
+                session['pause'] = 0
+                motor.change_motor_height(0.045,True)
+                session['changing_height'] = True
+            elif diff_flow<-0.2 and session['pause']>=90:
+                session['pause'] = 0
+                motor.change_motor_height(0.045,False)
+                session['changing_height'] = True
+                
+        if session['changing_height'] is True and session['time'] < 8:
+            session['time'] = session['time'] + 1
+            templateData = {'data' : 'Height Changing','time_elapsed': time_elapsed_formatted,'feed_dur':feed_dur_milli, 'dangerous_flow_detected': dangerous_flow_detected, 'data_randomized': flow_rate_randomized}
+        else:
+            session['changing_height'] = False
+            session['time'] = 0
+            #Send data to html
+            templateData = {'data' : flow_rate,'time_elapsed': time_elapsed_formatted,'feed_dur':feed_dur_milli, 'dangerous_flow_detected': dangerous_flow_detected, 'data_randomized': flow_rate_randomized}
         return jsonify(templateData), 200
 
     @app.route('/flow_rate_error/')
