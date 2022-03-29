@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from celluloid import Camera
 import ffmpeg
+from matplotlib.animation import FuncAnimation, PillowWriter 
+
  
  
 #Creating Data
@@ -13,7 +15,7 @@ fluid_lvl = np.linspace(0,7,100)
 x = np.ones(150)*5
 
 
-fig, ax = plt.subplots(nrows=1, ncols=4, figsize=(10, 5))
+fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(10, 5))
 #plt.xlim(4,6)
 #plt.ylim(0,2)
 camera = Camera(fig)
@@ -22,7 +24,7 @@ x_fluid = []
 for i in range(len(y_5fr)):
     ax[0].bar(['Fluid Level'], [7-fluid_lvl[i]], 0.5, label='Men',color =  [(226/256,220/256,205/256)])
     ax[0].bar(['Fluid Level'], [fluid_lvl[i]], 0.5, bottom=[7-fluid_lvl[i]],label='Women',color = [(169/256,169/256,169/256)])
-    ax[0].set_ylabel('Syringe Fluid Level (cm)')
+    # ax[0].set_ylabel('Syringe Fluid Level (cm)')
 
     a = ax[1].scatter([5],[34.28],color = 'red',s = 25)
     b = ax[1].scatter([5],[41.28],color = 'red',s = 25)
@@ -33,25 +35,25 @@ for i in range(len(y_5fr)):
     ax[1].get_xaxis().set_ticks([])
     ax[1].get_yaxis().set_visible(False)
 
-    a = ax[2].scatter([5],[27.89],color = 'red',s = 25)
-    b = ax[2].scatter([5],[34.89],color = 'red',s = 25)
-    c = ax[2].scatter(x[i], y_6fr[i] , color = 'blue' ,marker = "s", s = 200)
-    ax[2].plot([5,5],[0,45] , color = 'grey' , lw = 3)
-    ax[2].set_ylim(25,45)
-    ax[2].set_xlabel('6 Fr')
-    ax[2].get_xaxis().set_ticks([])
-    ax[2].get_yaxis().set_visible(False)
+    # a = ax[2].scatter([5],[27.89],color = 'red',s = 25)
+    # b = ax[2].scatter([5],[34.89],color = 'red',s = 25)
+    # c = ax[2].scatter(x[i], y_6fr[i] , color = 'blue' ,marker = "s", s = 200)
+    # ax[2].plot([5,5],[0,45] , color = 'grey' , lw = 3)
+    # ax[2].set_ylim(25,45)
+    # ax[2].set_xlabel('6 Fr')
+    # ax[2].get_xaxis().set_ticks([])
+    # ax[2].get_yaxis().set_visible(False)
 
-    x_fluid.append(7-fluid_lvl[i]) 
-    ax[3].plot(x_fluid,y_5fr[0:(i+1)],color = 'green')
-    ax[3].plot(x_fluid,y_6fr[0:(i+1)], color = 'blue')
-    ax[3].set_ylim(25,45)
-    ax[3].set_xlim(7,0)
-    ax[3].yaxis.tick_right()
-    ax[3].yaxis.set_label_position("right")
-    ax[3].set_xlabel('Syringe Fluid Level (cm)')
-    ax[3].set_ylabel('Height Above Baby (cm)')
-    ax[3].grid(linestyle="--")
+    # x_fluid.append(7-fluid_lvl[i]) 
+    # ax[3].plot(x_fluid,y_5fr[0:(i+1)],color = 'green')
+    # ax[3].plot(x_fluid,y_6fr[0:(i+1)], color = 'blue')
+    # ax[3].set_ylim(25,45)
+    # ax[3].set_xlim(7,0)
+    # ax[3].yaxis.tick_right()
+    # ax[3].yaxis.set_label_position("right")
+    # ax[3].set_xlabel('Syringe Fluid Level (cm)')
+    # ax[3].set_ylabel('Height Above Baby (cm)')
+    # ax[3].grid(linestyle="--")
     #ax[0].title('tracing a sin function')
 
     
@@ -65,7 +67,7 @@ for i in range(len(y_5fr)):
 #Creating the animation from captured frames
 animation = camera.animate(interval = 200, repeat = True,
                            repeat_delay = 500)
-animation.save(r'C:\Users\a_hop\OneDrive - University of Waterloo\Year 5\coil.gif',writer='imagemagick') 
+animation.save(r'C:\Users\rachj\Documents\GitHub\fydp-neofeed\user-testing\coil.gif',writer='imagemagick') 
 # fig, ax = plt.subplots()
 # ax.scatter
 # def animate_height(i):
