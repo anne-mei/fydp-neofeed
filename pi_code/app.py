@@ -231,18 +231,18 @@ try:
         
         session['pause'] = session['pause'] + 1
         if len(flow_sensor.flow_rates_converted)>60:
-            print (flow_sensor.flow_rates_converted[-10:-1])
-            avg_flow_rate = round(np.average(flow_sensor.flow_rates_converted[-10:-1]),1)
+            print (flow_sensor.flow_rates_converted[-20:-1])
+            avg_flow_rate = round(np.average(flow_sensor.flow_rates_converted[-20:-1]),1)
             print('avg_flow_rate',avg_flow_rate)
             print('input_flow_rate',session['input_flow_rate'])
             diff_flow = session['input_flow_rate']-avg_flow_rate
             print('diff_flow',diff_flow)
             #Control method, if diff in flow is significant, change height up or down by 1cm
-            if diff_flow >0.2 and session['pause'] >=90:
+            if diff_flow >0.15 and session['pause'] >=90:
                 session['pause'] = 0
                 motor.change_motor_height(0.045,True)
                 session['changing_height'] = True
-            elif diff_flow<-0.2 and session['pause']>=90:
+            elif diff_flow<-0.15 and session['pause']>=90:
                 session['pause'] = 0
                 motor.change_motor_height(0.045,False)
                 session['changing_height'] = True

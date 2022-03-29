@@ -27,7 +27,7 @@ class runSensor_GPIO:
         self.stop = False
     def initialize_sensor(self):
         referenceUnit = -2390
-        self.hx = HX711(4, 27)
+        self.hx = HX711(27, 4)
         #green - 5; white - 6
         #Set reference unit and tare scale
         self.hx.set_reading_format("MSB", "MSB")
@@ -37,6 +37,7 @@ class runSensor_GPIO:
         
     def cleanAndExit(self):
         self.stop = True
+        self.save_data()
         self.thread.join()
         #Cleanup GPIO
         #print("Cleaning...")
@@ -68,9 +69,9 @@ class runSensor_GPIO:
             total_weight = 0
             #Collect 10 dp
             while avg_count<10:
-                weight = self.hx.get_weight(1)
+                weight = self.hx.get_weight(1)*-1
                 #Find avg median
-                if -15 < weight < 50:
+                if -50 < weight < 50:
                     self.rn.add(weight)
 
                 avg_med_val = self.rn.findAvgMedian(10)
