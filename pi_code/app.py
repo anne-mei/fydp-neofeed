@@ -146,7 +146,6 @@ try:
             session['time_elapsed'] = 0
             return render_template('confirm.html',flow_rate = input_flow_rate,feed_dur = session['feed_dur'])
 
-
     @app.route('/set_height/',methods = ['POST'])
     def set_height():
         #initialize motor
@@ -247,15 +246,23 @@ try:
                 motor.change_motor_height(0.045,False)
                 session['changing_height'] = True
                 
-        if session['changing_height'] is True and session['time'] < 8:
+        if session['changing_height'] is True and session['time'] < 5:
             session['time'] = session['time'] + 1
             templateData = {'data' : 'Height Changing','time_elapsed': time_elapsed_formatted,'feed_dur':feed_dur_milli, 'dangerous_flow_detected': dangerous_flow_detected, 'data_randomized': flow_rate_randomized}
+        
+        elif session['changing_height'] is True and session['time'] >= 5 and session['time'] < 20:
+            session['time'] = session['time'] + 1
+            templateData = {'data' : 'Processing...','time_elapsed': time_elapsed_formatted,'feed_dur':feed_dur_milli, 'dangerous_flow_detected': dangerous_flow_detected, 'data_randomized': flow_rate_randomized}
         else:
             session['changing_height'] = False
             session['time'] = 0
             #Send data to html
             templateData = {'data' : flow_rate,'time_elapsed': time_elapsed_formatted,'feed_dur':feed_dur_milli, 'dangerous_flow_detected': dangerous_flow_detected, 'data_randomized': flow_rate_randomized}
         return jsonify(templateData), 200
+    
+    @app.route('/return_to_base_error/')
+    def return_to_base_error():
+        return render_template('return_to_base_error.html')   
 
     @app.route('/flow_rate_error/')
     def flow_rate_error():
@@ -284,7 +291,11 @@ try:
         flow_sensor.cleanAndExit()
         
         return render_template('return_height.html')
-
+    
+    @app.route('/return_to_base_reset/')
+    def return_to_base_reset():
+        return render_template('return_to_base_reset.html')
+                               
     @app.route('/reset_app/',methods = ['GET','POST'])
     def reset_app():
         
