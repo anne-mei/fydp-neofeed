@@ -95,9 +95,10 @@
       fetch(`http://${location.host}/flow_rate`)  // send request to route /update
         .then((resp) => resp.json())
         .then(function(response) {
+          
           let flow_rate = response.data.replace('-100 mL/min','Processing...');
           //document.getElementById('test').innerHTML =flow_rate;
-          if (flow_rate != 'Processing...')
+          if (flow_rate != 'Processing...' && flow_rate !='Height Changing')
           {
             document.getElementById('test').innerHTML =flow_rate;
             let flow_rate_number = Number(flow_rate.replace(' mL/min',''));
@@ -105,19 +106,20 @@
             
             if (flow_rate_number>2 && response.dangerous_flow_detected.toFixed()==0)
             {
-               //setTimeout(function(){window.location.href = "http://127.0.0.1:5000/flow_rate_error"},5000);
-               window.location.href = "http://127.0.0.1:5000/flow_rate_error";
+               window.location.href = "http://127.0.0.1:5000/return_to_base_error";
             }
           
           }
           else{
-            document.getElementById('test').innerHTML =response.data_randomized;
+            
+              document.getElementById('test').innerHTML = flow_rate;
+        
           }
 
           document.getElementById('time_elapsed').innerHTML =response.time_elapsed;
           setTimeout(function(){window.location.href = "http://127.0.0.1:5000/finish"},response.feed_dur);
           document.getElementById("stopButton").onclick = function () {
-        window.location.href = "http://127.0.0.1:5000/reset_app";
+        window.location.href = "http://127.0.0.1:5000/return_to_base_reset";
         };
       });
     }

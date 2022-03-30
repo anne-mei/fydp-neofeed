@@ -1,0 +1,138 @@
+<html>
+  <link href='https://fonts.googleapis.com/css?family=Nunito' rel='stylesheet'>
+
+    <script> 
+     function navigate() {
+        window.location.href = "http://127.0.0.1:5000/reset_app";
+       }  // redirect when done!
+        fetch('reset_app').then(navigate); // load the slow url then navigate
+  </script>
+
+  <style>
+    .modal {
+      margin: auto;
+      padding: 20px;
+      background: #fff;
+      border: 1px solid #666;
+      width: 550px;
+      height: 375px;
+      border-radius: 6px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+      position:fixed;
+      top:400;
+      left:0;
+      right:0;
+      font-family: 'Nunito';
+    }
+    .modal h2 { margin-top: 0; }
+    .modal .close {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      opacity: 0.8;
+      transition: all 200ms;
+      font-size: 24px;
+      font-weight: bold;
+      text-decoration: none;
+      color: #777;
+    }
+    .modal .close:hover { opacity: 1; }
+
+    .modal .content {
+      max-height: 400px;
+      overflow: auto;
+    }
+
+    .modal p:last-child { margin: 0; }
+
+    body {
+        background-image: url(../static/header.png);
+        background-repeat: no-repeat;
+        font-family: "Nunito"
+    }
+
+    p {
+      font-family: 'Nunito';
+      font-size: 35px;
+      padding-right: 50px;
+      padding-left: 50px;
+      padding-bottom: 0px;
+      text-align: center;
+    }
+
+    .center {
+      display: flex;
+      justify-content: center;
+    }
+
+    h2 {
+      font-size: 36px;
+      padding: 10px;
+    }
+
+    input[type=submit] {
+      background-color: #4CAF50; 
+      border: none;
+      color: white;
+      padding: 15px 32px;
+      text-align: center;
+      display: inline-block;
+      font-size: 16px;
+      border-radius: 8px;
+      font-size: 35px;
+      font-family: 'Nunito';
+    }
+
+    input[type=reset] {
+      background-color: #c03131; 
+      border: none;
+      color: white;
+      padding: 15px 32px;
+      text-align: center;
+      display: inline-block;
+      font-size: 16px;
+      border-radius: 8px;
+      font-size: 35px;
+      font-family: 'Nunito';
+    }
+
+   form{
+    float: left;
+    clear: right;
+    margin-right: 20px; 
+   }
+
+    .loader {
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 16px solid #3498db;
+    width: 50px;
+    height: 50px;
+    -webkit-animation: spin 2s linear infinite; /* Safari */
+    animation: spin 2s linear infinite;
+    position: absolute;
+    left: 45%;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+  </style>
+
+  <body>
+    <div id="modal1" class="overlay">
+      <div class="modal">
+        <h2 style="font-family: 'Nunito';" class="center" >Lowering Height!</h2>
+        <div class="content">
+        <p>Please wait as the syringe returns to base...</p>
+        <div class="loader"></div>
+        </div>
+    </div>
+    </div>
+
+  </body>
+
+</html>
+
