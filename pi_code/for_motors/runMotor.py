@@ -107,7 +107,7 @@ class runMotor():
 motor = runMotor()
 motor.initialize_motor()
 time1 = time.time()
-motor.change_motor_height(0.01,True)
+motor.change_motor_height(0.01,False)
 '''
 #tim'''e.sleep(5)
 #motor.change_motor_height(0.03,True)

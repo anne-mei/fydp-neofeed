@@ -191,6 +191,7 @@ try:
         session['pause'] = 0
         session['changing_height'] = False
         session['time'] = 0
+        session['large_diff_counter'] = 0
         #Initialize sensor and startflow sensor readings
         flow_sensor.initialize_sensor()
         flow_sensor.start_thread()
@@ -228,7 +229,20 @@ try:
         
         #Determine the avg flow rate over 10 flow rates, compare diff from flow rate input from user
         
+        diff = abs(flow_sensor.flow_rates_converted[-2] - flow_sensor.current_flow_rate)
+        
+        if session['large_diff_counter'] >0:
+            session['large_diff_counter'] =  session['large_diff_counter'] + 1
+            
+        if diff> 0.3 and session['large_diff_counter'] == 0:
+            session['large_diff_counter'] = session['large_diff_counter'] + 1
+            session['pause'] = session['pause'] - 30
+            
+        if session['large_diff_counter'] >30:
+            session['large_diff_counter'] = 0
+            
         session['pause'] = session['pause'] + 1
+        
         if len(flow_sensor.flow_rates_converted)>60:
             print (flow_sensor.flow_rates_converted[-20:-1])
             avg_flow_rate = round(np.average(flow_sensor.flow_rates_converted[-20:-1]),1)

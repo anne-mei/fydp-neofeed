@@ -96,7 +96,7 @@ class runSensor_GPIO:
             #avg_weight = self.hx.get_weight(1)
             #print("current weight",avg_weight)
 
-
+            print("ew")
             #Get array of averages
             avg_weights = self.filter_window.get_filter_window(avg_weight)
             
